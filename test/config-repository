@@ -1,0 +1,7 @@
+testImage=osixia/phpmyadmin:latest
+testContainer=phpmyadmin-repository-test-container
+testDir=/osixia-repository-test-docker-phpmyadmin
+
+export testImage
+export testContainer
+export testDir
