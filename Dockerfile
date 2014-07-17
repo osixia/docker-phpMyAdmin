@@ -2,10 +2,10 @@ FROM osixia/baseimage:0.6.0
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.fr>
 
 # Default configuration: can be overridden at the docker command line
-ENV LDAP_HOST 127.0.0.1
-ENV LDAP_BASE_DN dc=example,dc=com
-ENV LDAP_LOGIN_DN cn=admin,dc=example,dc=com
-ENV LDAP_SERVER_NAME docker.io phpLDAPadmin
+ENV DB_HOST 127.0.0.1
+ENV DB_ROOT_USER admin
+ENV DB_ROOT_PWD toor
+ENV USE_EXTENDED_FEATURES true
 
 # Disable SSH
 # RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
