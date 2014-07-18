@@ -8,6 +8,10 @@ server {
     # Make site accessible from http://localhost/
     server_name localhost;
 
+    location ~ /libraries {
+        deny  all;
+    }
+
     location / {
         try_files $uri $uri/ /index.php;
     }
@@ -20,6 +24,8 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_index index.php;
         include fastcgi_params;
+        
+        fastcgi_param PHP_VALUE "safe_mode=on \n safe_mode_gid=on \n php_flag magic_quotes_gpc=Off \n php_flag track_vars=On \n php_flag register_globals=Off \n php_admin_flag allow_url_fopen=Off \n php_value include_path=. \n upload_tmp_dir=/var/lib/phpmyadmin/tmp \n php_admin_value open_basedir=/usr/share/phpmyadmin/:/etc/phpmyadmin/:/var/lib/phpmyadmin/:/usr/share/php/php-gettext/:/usr/share/javascript/";
     }
 
 }
