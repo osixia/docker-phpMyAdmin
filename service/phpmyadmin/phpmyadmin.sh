@@ -7,7 +7,7 @@ status () {
   echo "---> ${@}" >&2
 }
 
-# a mariadb container is linked to this phpMyAdmin container
+# An osixia/mariadb container is linked to this phpMyAdmin container
 if [ -n "${DB_NAME}" ]; then
   DB_HOST=${DB_PORT_3306_TCP_ADDR}
   DB_ROOT_USER=${DB_ENV_ROOT_USER}
@@ -63,7 +63,7 @@ if [ ! -e /etc/phpmyadmin/docker_bootstrapped ]; then
     sed -i "s/dbpass='[^']*'/dbpass='${PMA_USER_PWD}'/g" /etc/phpmyadmin/config-db.php
   
   fi
-  
+
   # Correct issue
   # https://bugs.launchpad.net/ubuntu/+source/php-mcrypt/+bug/1240590
   ln -s ../conf.d/mcrypt.so /etc/php5/mods-available/mcrypt.so
@@ -72,6 +72,30 @@ if [ ! -e /etc/phpmyadmin/docker_bootstrapped ]; then
   # nginx config
   ln -s /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin
   rm /etc/nginx/sites-enabled/default
+
+  ## Fix some security stuff
+  ## https://wiki.phpmyadmin.net/pma/Security
+
+  # An osixia/mariadb container is linked to this phpMyAdmin container
+  if [ -n "${DB_NAME}" ]; then
+
+    # Remove root access from docker network
+    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "DELETE FROM mysql.user WHERE User='root' and Host='172.17.%.%';"
+    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "FLUSH PRIVILEGES;"
+
+  fi
+
+
+  # Remove setup directory
+  rm -rf /usr/share/phpmyadmin/setup
+
+  # Change php directories owner
+  chown -R www-data:www-data /usr/share/phpmyadmin/
+  chown -R www-data:www-data /etc/phpmyadmin/
+
+  # Change config file chmod
+  chmod 660 /etc/phpmyadmin/config.inc.php
+  chmod 660 /etc/phpmyadmin/config-db.php 
 
   touch /etc/phpmyadmin/docker_bootstrapped
 else

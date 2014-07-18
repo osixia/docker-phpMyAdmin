@@ -3,8 +3,8 @@
 #start a mariadb container
 linkedContainer="osixia-phpmyadmin-mariadb"
 
-echo "docker.io run --name $linkedContainer -d osixia/mariadb"
-docker.io run --name $linkedContainer -d osixia/mariadb 
+echo "docker.io run --name $linkedContainer -e ALLOW_ROOT_DOCKER_NETWORK=true -d osixia/mariadb"
+docker.io run --name $linkedContainer -e ALLOW_ROOT_DOCKER_NETWORK=true -d osixia/mariadb 
 sleep 10
 
 dir=$(dirname $0)
