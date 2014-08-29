@@ -1,4 +1,4 @@
 docker-phpmyadmin
 =================
 
-A docker.io image to run phpMyAdmin
+A docker image to run phpMyAdmin
