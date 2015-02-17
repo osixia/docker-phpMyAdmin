@@ -5,6 +5,30 @@ FIRST_START_DONE="/etc/docker-phpmyadmin-first-start-done"
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
 
+  # create phpMyAdmin vhost
+  if [ "$HTTPS" == "true" ]; then
+
+    # check certificat and key or create it
+    /sbin/ssl-kit "/osixia/phpmyadmin/apache2/$SSL_CRT_FILENAME" "/osixia/phpmyadmin/apache2/$SSL_KEY_FILENAME"
+
+    # add CA certificat config if CA cert exists
+    if [ -e "/osixia/phpmyadmin/apache2/$SSL_CA_CRT_FILENAME" ]; then
+      sed -i "s/#SSLCACertificateFile/SSLCACertificateFile/g" /osixia/phpmyadmin/apache2/phpmyadmin-ssl.conf
+    fi
+
+    a2ensite phpmyadmin-ssl
+
+  else
+    a2ensite phpmyadmin
+  fi
+
+  get_salt () {
+    salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:|{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
+  }
+
+
+
+
  # phpMyAdmin DB host config
  sed -i "s/dbserver=''/dbserver='${DB_HOST}'/g" /etc/phpmyadmin/config-db.php
 
@@ -46,20 +70,13 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   
   fi
 
+  # Fix file permission
+  find /var/www/ -type d -exec chmod 755 {} \;
+  find /var/www/ -type f -exec chmod 644 {} \;
+  chmod 400 /var/www/phpmyadmin/config.inc.php
+  chown www-data:www-data -R /var/www
+
   touch $FIRST_START_DONE
 fi
 
 exit 0
-
-
-# An osixia/mariadb container is linked to this phpMyAdmin container
-if [ -n "${DB_NAME}" ]; then
-  DB_HOST=${DB_PORT_3306_TCP_ADDR}
-  DB_ROOT_USER=${DB_ENV_ROOT_USER}
-  DB_ROOT_PWD=${DB_ENV_ROOT_PWD}
-else
-  DB_HOST=${DB_HOST}
-  DB_ROOT_USER=${DB_ROOT_USER}
-  DB_ROOT_PWD=${DB_ROOT_PWD}
-fi
-
