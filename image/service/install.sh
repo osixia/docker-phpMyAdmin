@@ -1,6 +1,9 @@
 #!/bin/bash -e
 # this script is run during the image build
 
+# set python encoded envvar to decode
+touch /etc/decode-envvar/DB_HOSTS
+
 # Add phpMyAdmin virtualhosts
 ln -s /osixia/phpmyadmin/apache2/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
 ln -s /osixia/phpmyadmin/apache2/phpmyadmin-ssl.conf /etc/apache2/sites-available/phpmyadmin-ssl.conf

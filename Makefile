@@ -6,7 +6,7 @@ VERSION = 0.1.2
 all: build
 
 build:
-	docker build -t $(NAME):$(VERSION) --rm .
+	docker build -t $(NAME):$(VERSION) --rm image
 
 test:
 	env NAME=$(NAME) VERSION=$(VERSION) bats test/test.bats
