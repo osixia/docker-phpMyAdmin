@@ -16,7 +16,7 @@ CMD ["/sbin/my_init"]
 # php5-fpm install will detect apache2 and configure it
 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin
-RUN apt-get update && /sbin/enable-service apache2 php5-fpm \
+RUN apt-get update && /sbin/enable-service apache2 php5-fpm ssl-kit \
 	&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends mysql-client php-gettext php5-json php5-mcrypt php5-mysql php5-gd \
 	&& curl -o phpmyadmin.tar.gz -SL http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
 	&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \

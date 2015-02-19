@@ -6,7 +6,7 @@ FIRST_START_DONE="/etc/docker-phpmyadmin-first-start-done"
 if [ ! -e "$FIRST_START_DONE" ]; then
 
   # create phpMyAdmin vhost
-  if [ "$HTTPS" == "true" ]; then
+  if [ "$HTTPS" == "True" ]; then
 
     # check certificat and key or create it
     /sbin/ssl-kit "/osixia/phpmyadmin/apache2/$SSL_CRT_FILENAME" "/osixia/phpmyadmin/apache2/$SSL_KEY_FILENAME"
@@ -27,6 +27,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   }
 
   # phpMyAdmin cookie secret
+  get_salt
   sed -i "s/blowfish_secret'] = '/blowfish_secret'] = '${salt}/g" /osixia/phpmyadmin/config.inc.php
 
   # phpMyAdmin servers config
@@ -49,8 +50,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
       # it's just a value
       else
-        echo "$to_print['$key']=$value"
-        echo "$to_print['$key']=$value" >> /osixia/phpmyadmin/config.inc.php
+        echo "$to_print['$key']=$value;" >> /osixia/phpmyadmin/config.inc.php
       fi
 
     done
@@ -66,15 +66,12 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     # it's a table of infos
     if [ "${#infos[@]}" -gt "1" ]; then
-
-      echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}'"
-      echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}'" >> /osixia/phpmyadmin/config.inc.php
+      echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}';" >> /osixia/phpmyadmin/config.inc.php
       host_infos "\$cfg['Servers'][$i]" ${infos[1]}
 
     # it's just a host name
     else
-        echo "\$cfg['Servers'][$i]['host'] = '${!host}'"
-        echo "\$cfg['Servers'][$i]['host'] = '${!host}'" >> /osixia/phpmyadmin/config.inc.php
+        echo "\$cfg['Servers'][$i]['host'] = '${!host}';" >> /osixia/phpmyadmin/config.inc.php
     fi
 
     ((i++))
@@ -83,7 +80,8 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   # Fix file permission
   find /var/www/ -type d -exec chmod 755 {} \;
   find /var/www/ -type f -exec chmod 644 {} \;
-  chmod 400 /var/www/phpmyadmin/config.inc.php
+  chmod 400 /osixia/phpmyadmin/config.inc.php
+  chown www-data:www-data -R /osixia/phpmyadmin/config.inc.php
   chown www-data:www-data -R /var/www
 
   touch $FIRST_START_DONE
