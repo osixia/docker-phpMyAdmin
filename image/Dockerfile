@@ -38,5 +38,8 @@ ADD env.yml /etc/env.yml
 # Add phpMyAdmin container start config
 ADD service/phpmyadmin/container-start.sh /etc/my_init.d/phpmyadmin
 
+# Set wordpress data directory in a data volume
+VOLUME ["/var/www/phpmyadmin"]
+
 # Expose http and https default ports
 EXPOSE 80 443

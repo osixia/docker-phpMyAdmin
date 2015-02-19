@@ -26,49 +26,59 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:|{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
   }
 
+  # phpMyAdmin cookie secret
+  sed -i "s/blowfish_secret'] = '/blowfish_secret'] = '${salt}/g" /osixia/phpmyadmin/config.inc.php
 
+  # phpMyAdmin servers config
+  host_infos () { 
 
+    local to_print=$1
+    local infos=(${!2})
 
- # phpMyAdmin DB host config
- sed -i "s/dbserver=''/dbserver='${DB_HOST}'/g" /etc/phpmyadmin/config-db.php
+    for info in "${infos[@]}"
+    do
 
- if [ "$USE_EXTENDED_FEATURES" = true ] ; then
+      info_key_value=(${!info})
 
-    # Create phpMyAdmin database
-    gunzip /usr/share/doc/phpmyadmin/examples/create_tables.sql.gz 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST < /usr/share/doc/phpmyadmin/examples/create_tables.sql
+      local key=${!info_key_value[0]}
+      local value=(${!info_key_value[1]})
 
-    # Set correct phpMyAdmin table name
-    sed -i "s/'pma_/'pma__/g" /etc/phpmyadmin/config.inc.php
+      # it's a table of values
+      if [ "${#value[@]}" -gt "1" ]; then
+        host_infos "$to_print['$key']" ${info_key_value[1]}
 
-    # Generate phpMyAdmin user password
-    PMA_USER_PWD=`makepasswd --chars 16`
+      # it's just a value
+      else
+        echo "$to_print['$key']=$value"
+        echo "$to_print['$key']=$value" >> /osixia/phpmyadmin/config.inc.php
+      fi
 
-    # Create phpMyAdmin user and privileges
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT USAGE ON mysql.* TO 'phpmyadmin'@'localhost' IDENTIFIED BY '${PMA_USER_PWD}';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT USAGE ON mysql.* TO 'phpmyadmin'@'%' IDENTIFIED BY '${PMA_USER_PWD}';"
+    done
+  }
 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT (Host, User, Select_priv, Insert_priv, Update_priv, Delete_priv,Create_priv, Drop_priv, Reload_priv, Shutdown_priv,Process_priv,File_priv, Grant_priv, References_priv, Index_priv, Alter_priv,Show_db_priv, Super_priv, Create_tmp_table_priv, Lock_tables_priv,Execute_priv,Repl_slave_priv, Repl_client_priv) ON mysql.user TO 'phpmyadmin'@'localhost';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT (Host, User, Select_priv, Insert_priv, Update_priv, Delete_priv,Create_priv, Drop_priv, Reload_priv, Shutdown_priv,Process_priv,File_priv, Grant_priv, References_priv, Index_priv, Alter_priv,Show_db_priv, Super_priv, Create_tmp_table_priv, Lock_tables_priv,Execute_priv,Repl_slave_priv, Repl_client_priv) ON mysql.user TO 'phpmyadmin'@'%';"
+  DB_HOSTS=($DB_HOSTS)
+  i=1
+  for host in "${DB_HOSTS[@]}"
+  do
+    
+    #host var contain a variable name, we access to the variable value and cast it to a table
+    infos=(${!host})
 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT ON mysql.db TO 'phpmyadmin'@'localhost';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT ON mysql.db TO 'phpmyadmin'@'%';"
+    # it's a table of infos
+    if [ "${#infos[@]}" -gt "1" ]; then
 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT ON mysql.host TO 'phpmyadmin'@'localhost';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT ON mysql.host TO 'phpmyadmin'@'%';"
+      echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}'"
+      echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}'" >> /osixia/phpmyadmin/config.inc.php
+      host_infos "\$cfg['Servers'][$i]" ${infos[1]}
 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT (Host, Db, User, Table_name, Table_priv, Column_priv) ON mysql.tables_priv TO 'phpmyadmin'@'localhost';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT (Host, Db, User, Table_name, Table_priv, Column_priv) ON mysql.tables_priv TO 'phpmyadmin'@'%';"
+    # it's just a host name
+    else
+        echo "\$cfg['Servers'][$i]['host'] = '${!host}'"
+        echo "\$cfg['Servers'][$i]['host'] = '${!host}'" >> /osixia/phpmyadmin/config.inc.php
+    fi
 
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'phpmyadmin'@'localhost';"
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "GRANT SELECT, INSERT, UPDATE, DELETE ON phpmyadmin.* TO 'phpmyadmin'@'%';"
-
-    mysql -u $DB_ROOT_USER -p$DB_ROOT_PWD -h $DB_HOST -e "FLUSH PRIVILEGES;"
-
-    # Set phpMyAdmin user password 
-    sed -i "s/dbpass='[^']*'/dbpass='${PMA_USER_PWD}'/g" /etc/phpmyadmin/config-db.php
-  
-  fi
+    ((i++))
+  done
 
   # Fix file permission
   find /var/www/ -type d -exec chmod 755 {} \;
