@@ -1,8 +1,0 @@
-testImage=phpmyadmin-test
-testContainer=phpmyadmin-test-container
-testDir=/osixia-test-docker-phpmyadmin
-
-export testImage
-export testContainer
-export testDir
-
