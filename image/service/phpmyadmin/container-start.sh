@@ -48,7 +48,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       if [ "${#value[@]}" -gt "1" ]; then
         host_infos "$to_print['$key']" ${info_key_value[1]}
 
-      # it's just a value, not empty
+      # it's just a not empty value
       elif [ -n "$value" ]; then
         echo "$to_print['$key']=$value;" >> /osixia/phpmyadmin/config.inc.php
       fi
