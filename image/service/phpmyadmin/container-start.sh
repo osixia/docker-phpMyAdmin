@@ -9,10 +9,10 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ "${HTTPS,,}" == "true" ]; then
 
     # check certificat and key or create it
-    /sbin/ssl-kit "/osixia/phpmyadmin/apache2/$SSL_CRT_FILENAME" "/osixia/phpmyadmin/apache2/$SSL_KEY_FILENAME"
+    /sbin/ssl-kit "/osixia/phpmyadmin/apache2/ssl/$SSL_CRT_FILENAME" "/osixia/phpmyadmin/apache2/ssl/$SSL_KEY_FILENAME"
 
     # add CA certificat config if CA cert exists
-    if [ -e "/osixia/phpmyadmin/apache2/$SSL_CA_CRT_FILENAME" ]; then
+    if [ -e "/osixia/phpmyadmin/apache2/ssl/$SSL_CA_CRT_FILENAME" ]; then
       sed -i "s/#SSLCACertificateFile/SSLCACertificateFile/g" /osixia/phpmyadmin/apache2/phpmyadmin-ssl.conf
     fi
 
