@@ -1,4 +1,4 @@
-FROM osixia/baseimage:0.10.2
+FROM osixia/baseimage:0.10.3
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version

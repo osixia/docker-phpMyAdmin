@@ -30,29 +30,54 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   get_salt
   sed -i "s/blowfish_secret'] = '/blowfish_secret'] = '${salt}/g" /osixia/phpmyadmin/config.inc.php
 
-  # phpMyAdmin servers config
-  host_infos () { 
+  print_by_php_type() {
+
+    if [ "$1" == "True" ]; then
+      echo "true"
+    elif [ "$1" == "False" ]; then
+      echo "false"
+    elif [[ "$1" == array\(\'* ]]; then 
+      echo "$1"
+    else
+      echo "'$1'"
+    fi
+  }
+
+  # phpLDAPadmin servers config
+  host_infos() { 
 
     local to_print=$1
     local infos=(${!2})
 
     for info in "${infos[@]}"
     do
-
-      info_key_value=(${!info})
-
-      local key=${!info_key_value[0]}
-      local value=(${!info_key_value[1]})
-
-      # it's a table of values
-      if [ "${#value[@]}" -gt "1" ]; then
-        host_infos "$to_print['$key']" ${info_key_value[1]}
-
-      # it's just a not empty value
-      elif [ -n "$value" ]; then
-        echo "$to_print['$key']=$value;" >> /osixia/phpmyadmin/config.inc.php
-      fi
+      host_infos_value "$to_print" "$info"
     done
+  }
+
+  host_infos_value(){
+
+    local to_print=$1
+    local info_key_value=(${!2})
+
+    local key=${!info_key_value[0]}
+    local value=(${!info_key_value[1]})
+
+    local value_of_value_table=(${!value})
+
+    # it's a table of values
+    if [ "${#value[@]}" -gt "1" ]; then
+      host_infos "$to_print['$key']" ${info_key_value[1]}
+
+    # the value of value is a table
+    elif [ "${#value_of_value_table[@]}" -gt "1" ]; then
+      host_infos_value "$to_print['$key']" "$value"
+
+    # it's just a not empty value
+    elif [ -n "$value" ]; then
+      local php_value=$(print_by_php_type $value)
+      echo "$to_print['$key']=$php_value;" >> /osixia/phpmyadmin/config.inc.php
+    fi
   }
 
   PHPMYADMIN_CONFIG_DB_TABLES=($PHPMYADMIN_CONFIG_DB_TABLES)
