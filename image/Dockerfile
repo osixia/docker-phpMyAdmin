@@ -5,9 +5,6 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 ENV PHPMYADMIN_VERSION 4.3.9
 ENV PHPMYADMIN_SHA1 423734dc0d804ea79dd388a163797e07e54b93a8
 
-# Set correct environment variables.
-ENV HOME /root
-
 # Use baseimage-docker's init system.
 CMD ["/sbin/my_init"]
 
