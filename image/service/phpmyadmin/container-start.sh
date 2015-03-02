@@ -5,6 +5,12 @@ FIRST_START_DONE="/etc/docker-phpmyadmin-first-start-done"
 # container first start
 if [ ! -e "$FIRST_START_DONE" ]; then
 
+  # phpMyAdmin directory is empty, we use the bootstrap
+  if [ ! "$(ls -A /var/www/phpmyadmin)" ]; then
+    cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
+    rm -rf /var/www/phpmyadmin_bootstrap
+  fi
+
   # create phpMyAdmin vhost
   if [ "${HTTPS,,}" == "true" ]; then
 
