@@ -4,9 +4,12 @@
 # Add phpMyAdmin virtualhosts
 ln -s /osixia/phpmyadmin/apache2/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
 ln -s /osixia/phpmyadmin/apache2/phpmyadmin-ssl.conf /etc/apache2/sites-available/phpmyadmin-ssl.conf
-ln -s /osixia/phpmyadmin/config.inc.php /var/www/phpmyadmin_bootstrap/config.inc.php
+
+cp /osixia/phpmyadmin/config.inc.php /var/www/phpmyadmin_bootstrap/config.inc.php
+rm /osixia/phpmyadmin/config.inc.php
 
 cat /osixia/phpmyadmin/php5-fpm/pool.conf >> /etc/php5/fpm/pool.d/www.conf
+rm /osixia/phpmyadmin/php5-fpm/pool.conf
 
 mkdir -p /var/www/tmp
 chown www-data:www-data /var/www/tmp
