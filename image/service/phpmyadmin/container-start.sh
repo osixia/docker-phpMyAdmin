@@ -6,14 +6,14 @@ FIRST_START_DONE="/etc/docker-phpmyadmin-first-start-done"
 if [ ! -e "$FIRST_START_DONE" ]; then
 
   # create phpMyAdmin vhost
-  if [ "${HTTPS,,}" == "true" ]; then
+  if [ "${PHPMYADMIN_HTTPS,,}" == "true" ]; then
 
     # check certificat and key or create it
-    /sbin/ssl-kit "/osixia/phpmyadmin/apache2/ssl/$SSL_CRT_FILENAME" "/osixia/phpmyadmin/apache2/ssl/$SSL_KEY_FILENAME"
+    /sbin/ssl-helper "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CRT_FILENAME" "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_KEY_FILENAME" --ca-crt=/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME
 
     # add CA certificat config if CA cert exists
-    if [ -e "/osixia/phpmyadmin/apache2/ssl/$SSL_CA_CRT_FILENAME" ]; then
-      sed -i "s/#SSLCACertificateFile/SSLCACertificateFile/g" /osixia/phpmyadmin/apache2/phpmyadmin-ssl.conf
+    if [ -e "--ca-crt=/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME" ]; then
+      sed -i "s/#SSLCACertificateFile/SSLCACertificateFile/g" /container/service/phpmyadmin/assets/apache2/phpmyadmin-ssl.conf
     fi
 
     a2ensite phpmyadmin-ssl
@@ -26,6 +26,9 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ ! "$(ls -A /var/www/phpmyadmin)" ]; then
     cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
     rm -rf /var/www/phpmyadmin_bootstrap
+
+    echo "link /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
+    ln -s /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
 
     get_salt () {
       salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:|{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
@@ -41,7 +44,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
         echo "true"
       elif [ "$1" == "False" ]; then
         echo "false"
-      elif [[ "$1" == array\(\'* ]]; then 
+      elif [[ "$1" == array\(\'* ]]; then
         echo "$1"
       else
         echo "'$1'"
@@ -49,7 +52,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     }
 
     # phpLDAPadmin servers config
-    host_infos() { 
+    host_infos() {
 
       local to_print=$1
       local infos=(${!2})
@@ -106,11 +109,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       done
     }
 
-    DB_HOSTS=($DB_HOSTS)
+    PHPMYADMIN_DB_HOSTS=($PHPMYADMIN_DB_HOSTS)
     i=1
-    for host in "${DB_HOSTS[@]}"
+    for host in "${PHPMYADMIN_DB_HOSTS[@]}"
     do
-      
+
       #host var contain a variable name, we access to the variable value and cast it to a table
       infos=(${!host})
 

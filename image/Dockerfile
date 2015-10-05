@@ -1,39 +1,48 @@
-FROM osixia/baseimage:0.10.3
+FROM osixia/web-baseimage:0.1.2
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.3.9
-ENV PHPMYADMIN_SHA1 423734dc0d804ea79dd388a163797e07e54b93a8
+ENV PHPMYADMIN_VERSION 4.5.0.2
+ENV PHPMYADMIN_SHA1 3015632edccb14790cb6a429c947fc956e30b7fc
 
-# Use baseimage-docker's init system.
-CMD ["/sbin/my_init"]
+# Use baseimage's init system.
+# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
+CMD ["/container/tool/run"]
 
 # Install apache2 and php5-fpm using osixia/baseimage utils
-# Caution: /sbin/enable-service arguments order is important
+# Caution: /container/tool/install-service-available arguments order is important
 # php5-fpm install will detect apache2 and configure it
 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
-RUN apt-get update && /sbin/enable-service apache2 php5-fpm ssl-kit \
-	&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends mysql-client php-gettext php5-json php5-mcrypt php5-mysql php5-gd \
-	&& curl -o phpmyadmin.tar.gz -SL http://downloads.sourceforge.net/project/phpmyadmin/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
-	&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
-	&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
-	&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap
+RUN apt-get update \
+		&& /container/tool/install-multiple-process-stack \
+		&& /container/tool/install-service-available apache2 php5-fpm ssl-helper-openssl \
+		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+			 mysql-client \
+			 php-gettext \
+			 php5-json \
+			 php5-mcrypt \
+			 php5-mysql \
+			 php5-gd \
+			 curl \
+		&& curl -o phpmyadmin.tar.gz -SL http://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
+		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
+		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
+		&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap \
+		&& apt-get remove -y --purge --auto-remove curl
 
-# Add install script and phpMyAdmin assets
-ADD service/install.sh /tmp/install.sh
-ADD service/phpmyadmin/assets /osixia/phpmyadmin
+# Add service directory to /container/service
+ADD service /container/service
 
-# Run install script and clean all
-RUN ./tmp/install.sh \
-	&& rm phpmyadmin.tar.gz \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Use baseimage install-service script and clean all
+# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/install-service
+RUN /container/tool/install-service \
+		&& rm phpmyadmin.tar.gz \
+		&& apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
-ADD env.yml /etc/env.yml
-
-# Add phpMyAdmin container start config
-ADD service/phpmyadmin/container-start.sh /etc/my_init.d/phpmyadmin
+ADD env.yaml /etc/env.yaml
 
 # Set wordpress data directory in a data volume
 VOLUME ["/var/www/phpmyadmin"]
