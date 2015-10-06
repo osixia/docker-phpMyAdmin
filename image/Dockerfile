@@ -5,6 +5,9 @@ MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 ENV PHPMYADMIN_VERSION 4.5.0.2
 ENV PHPMYADMIN_SHA1 3015632edccb14790cb6a429c947fc956e30b7fc
 
+# MariaDB version
+ENV MARIADB_MAJOR 10.1
+
 # Use baseimage's init system.
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
 CMD ["/container/tool/run"]
@@ -13,12 +16,21 @@ CMD ["/container/tool/run"]
 # Caution: /container/tool/install-service-available arguments order is important
 # php5-fpm install will detect apache2 and configure it
 
+# Add MariaDB repository
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db \
+    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main" > /etc/apt/sources.list.d/mariadb.list \
+    && { \
+		     echo 'Package: *'; \
+		     echo 'Pin: release o=MariaDB'; \
+		     echo 'Pin-Priority: 999'; \
+	     } > /etc/apt/preferences.d/mariadb
+
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
 		&& /container/tool/install-multiple-process-stack \
 		&& /container/tool/install-service-available apache2 php5-fpm ssl-helper-openssl \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-			 mysql-client \
+			 mariadb-client \
 			 php-gettext \
 			 php5-json \
 			 php5-mcrypt \
