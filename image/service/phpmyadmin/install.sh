@@ -22,5 +22,5 @@ php5enmod mcrypt
 
 # delete unnecessary files
 rm -rf /var/www/phpmyadmin_bootstrap/doc \
-	   /var/www/phpmyadmin_bootstrap/scripts \
+	   /var/www/phpmyadmin_bootstrap/examples \
 	   /var/www/phpmyadmin_bootstrap/setup
