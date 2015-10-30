@@ -1,7 +1,8 @@
 # Changelog
 
 ## 0.3.0
-  - Upgrade baseimage: osixia/web-baseimage:0.1.2
+  - Upgrade baseimage: osixia/web-baseimage:0.1.3
+  - Easy mariadb ssl support
 
 ## 0.2.2
   - Fix bootstrap config
