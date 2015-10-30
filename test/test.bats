@@ -11,7 +11,8 @@ load test_helper
 @test "http response" {
 
   tmp_file="$BATS_TMPDIR/docker-test"
-  
+  rm -f $tmp_file
+
   run_image
   wait_service apache2 php5-fpm
   curl --silent --insecure https://$CONTAINER_IP >> $tmp_file
@@ -27,15 +28,16 @@ load test_helper
 @test "http response with database login" {
 
   tmp_file="$BATS_TMPDIR/docker-test"
-  
+  rm -f $tmp_file
+
   # we start a new mariadb container
-  DB_CID=$(docker run -e ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.4)
+  DB_CID=$(docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.5)
   DB_IP=$(get_container_ip_by_cid $DB_CID)
 
-  # we start the wordpress container and set DB_HOSTS
-  run_image -e DB_HOSTS=$DB_IP
+  # we start the wordpress container and set PHPMYADMIN_DB_HOSTS
+  run_image -e PHPMYADMIN_DB_HOSTS=$DB_IP
 
-  # wait mariadb 
+  # wait mariadb
   wait_service_by_cid $DB_CID mysqld
 
   # wait wordpress container apache2 service
