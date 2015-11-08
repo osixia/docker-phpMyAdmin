@@ -59,7 +59,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       fi
     }
 
-    # phpLDAPadmin servers config
+    # phpMyAdmin servers config
     host_infos() {
 
       local to_print=$1
@@ -146,7 +146,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       ((i++))
     done
 
-    sed -i "/{{ PHPLDAPADMIN_SERVERS }}/d" /var/www/phpldapadmin/config/config.php
+    sed -i "/{{ PHPMYADMIN_SERVERS }}/d" /var/www/phpmyadmin/config.inc.php
 
   fi
 
