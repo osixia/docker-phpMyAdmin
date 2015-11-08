@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -ex
 
 FIRST_START_DONE="/etc/docker-phpmyadmin-first-start-done"
 
