@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+  - Upgrade baseimage: osixia/web-baseimage:0.1.4
+  - Add env variable PHPMYADMIN_CONFIG_ABSOLUTE_URI
+  - More simple config.inc.php file
+
 ## 0.3.0
   - Upgrade baseimage: osixia/web-baseimage:0.1.3
   - Easy mariadb ssl support
