@@ -1,5 +1,5 @@
 NAME = osixia/phpmyadmin
-VERSION = 0.3.0
+VERSION = 0.3.1
 
 .PHONY: all build test tag_latest release
 

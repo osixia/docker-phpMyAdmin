@@ -30,13 +30,21 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     echo "link /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
     ln -s /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
 
+    # phpMyAdmin Absolute URI
+    sed -i "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" /var/www/phpmyadmin/config.inc.php
+
     get_salt () {
-      salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:|{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
+      salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:/{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
     }
 
     # phpMyAdmin cookie secret
     get_salt
-    sed -i "s/blowfish_secret'] = '/blowfish_secret'] = '${salt}/g" /var/www/phpmyadmin/config.inc.php
+    sed -i "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" /var/www/phpmyadmin/config.inc.php
+
+    append_to_servers() {
+      TO_APPEND=$1
+      sed -i "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" /var/www/phpmyadmin/config.inc.php
+    }
 
     print_by_php_type() {
 
@@ -51,7 +59,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       fi
     }
 
-    # phpLDAPadmin servers config
+    # phpMyAdmin servers config
     host_infos() {
 
       local to_print=$1
@@ -84,28 +92,28 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       # the value contain a not empty variable
       elif [ -n "${!value}" ]; then
         local php_value=$(print_by_php_type ${!value})
-        echo "$to_print['$key']=$php_value;" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "$to_print['$key']=$php_value;"
 
       # it's just a not empty value
       elif [ -n "$value" ]; then
         local php_value=$(print_by_php_type $value)
-        echo "$to_print['$key']=$php_value;" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "$to_print['$key']=$php_value;"
       fi
     }
 
     PHPMYADMIN_CONFIG_DB_TABLES=($PHPMYADMIN_CONFIG_DB_TABLES)
     pma_storage_config (){
 
-      echo "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';" >> /var/www/phpmyadmin/config.inc.php
-      echo "\$cfg['Servers'][$1]['controlport'] = '${PHPMYADMIN_CONFIG_DB_PORT}';" >> /var/www/phpmyadmin/config.inc.php
-      echo "\$cfg['Servers'][$1]['controluser'] = '${PHPMYADMIN_CONFIG_DB_USER}';" >> /var/www/phpmyadmin/config.inc.php
-      echo "\$cfg['Servers'][$1]['controlpass'] = '${PHPMYADMIN_CONFIG_DB_PASSWORD}';" >> /var/www/phpmyadmin/config.inc.php
-      echo "\$cfg['Servers'][$1]['pmadb'] = '${PHPMYADMIN_CONFIG_DB_NAME}';" >> /var/www/phpmyadmin/config.inc.php
+      append_to_servers "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';"
+      append_to_servers "\$cfg['Servers'][$1]['controlport'] = '${PHPMYADMIN_CONFIG_DB_PORT}';"
+      append_to_servers "\$cfg['Servers'][$1]['controluser'] = '${PHPMYADMIN_CONFIG_DB_USER}';"
+      append_to_servers "\$cfg['Servers'][$1]['controlpass'] = '${PHPMYADMIN_CONFIG_DB_PASSWORD}';"
+      append_to_servers "\$cfg['Servers'][$1]['pmadb'] = '${PHPMYADMIN_CONFIG_DB_NAME}';"
 
       for table_infos in "${PHPMYADMIN_CONFIG_DB_TABLES[@]}"
       do
         table=(${!table_infos})
-        echo "\$cfg['Servers'][$1]['${!table[0]}'] = '${!table[1]}';" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "\$cfg['Servers'][$1]['${!table[0]}'] = '${!table[1]}';"
       done
     }
 
@@ -119,24 +127,26 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
       # it's a table of infos
       if [ "${#infos[@]}" -gt "1" ]; then
-        echo "\$cfg['Servers'][$i]['host'] = '${!infos[0]}';" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "\$cfg['Servers'][$i]['host'] = '${!infos[0]}';"
         pma_storage_config $i
         host_infos "\$cfg['Servers'][$i]" ${infos[1]}
 
       # it's just a host name
       # stored in a variable
       elif [ -n "${!host}" ]; then
-        echo "\$cfg['Servers'][$i]['host'] = '${!host}';" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "\$cfg['Servers'][$i]['host'] = '${!host}';"
         pma_storage_config $i
 
       # directly
       else
-        echo "\$cfg['Servers'][$i]['host'] = '${host}';" >> /var/www/phpmyadmin/config.inc.php
+        append_to_servers "\$cfg['Servers'][$i]['host'] = '${host}';"
         pma_storage_config $i
       fi
 
       ((i++))
     done
+
+    sed -i "/{{ PHPMYADMIN_SERVERS }}/d" /var/www/phpmyadmin/config.inc.php
 
   fi
 

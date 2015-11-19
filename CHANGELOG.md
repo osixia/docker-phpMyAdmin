@@ -1,7 +1,13 @@
 # Changelog
 
+## 0.3.1
+  - Upgrade baseimage: web-baseimage:0.1.5
+  - Add env variable PHPMYADMIN_CONFIG_ABSOLUTE_URI
+  - More simple config.inc.php file
+  - Remove listen on http when https is enable
+
 ## 0.3.0
-  - Upgrade baseimage: osixia/web-baseimage:0.1.3
+  - Upgrade baseimage: web-baseimage:0.1.3
   - Easy mariadb ssl support
 
 ## 0.2.2
