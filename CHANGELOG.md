@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.2
+  - Upgrade baseimage: web-baseimage:0.1.6
+
 ## 0.3.1
   - Upgrade baseimage: web-baseimage:0.1.5
   - Add env variable PHPMYADMIN_CONFIG_ABSOLUTE_URI
