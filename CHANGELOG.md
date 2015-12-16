@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.4
+  - Upgrade baseimage: web-baseimage:0.1.7
+  - Makefile with build no cache
+  
 ## 0.3.3
   - phpMyAdmin 4.5.2
 
