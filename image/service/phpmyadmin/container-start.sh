@@ -27,8 +27,8 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
     rm -rf /var/www/phpmyadmin_bootstrap
 
-    echo "link /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
-    ln -s /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
+    echo "copy /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
+    cp -f /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
 
     # phpMyAdmin Absolute URI
     sed -i --follow-symlinks "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" /var/www/phpmyadmin/config.inc.php
