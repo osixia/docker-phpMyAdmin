@@ -13,7 +13,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     # add CA certificat config if CA cert exists
     if [ -e "--ca-crt=/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME" ]; then
-      sed -i "s/#SSLCACertificateFile/SSLCACertificateFile/g" /container/service/phpmyadmin/assets/apache2/phpmyadmin-ssl.conf
+      sed -i --follow-symlinks "s/#SSLCACertificateFile/SSLCACertificateFile/g" /container/service/phpmyadmin/assets/apache2/phpmyadmin-ssl.conf
     fi
 
     a2ensite phpmyadmin-ssl
@@ -27,11 +27,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
     rm -rf /var/www/phpmyadmin_bootstrap
 
-    echo "link /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
-    ln -s /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
+    echo "copy /container/service/phpmyadmin/assets/config.inc.php to /var/www/phpmyadmin/config.inc.php"
+    cp -f /container/service/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
 
     # phpMyAdmin Absolute URI
-    sed -i "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" /var/www/phpmyadmin/config.inc.php
+    sed -i --follow-symlinks "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" /var/www/phpmyadmin/config.inc.php
 
     get_salt () {
       salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:/{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
@@ -39,11 +39,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     # phpMyAdmin cookie secret
     get_salt
-    sed -i "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" /var/www/phpmyadmin/config.inc.php
+    sed -i --follow-symlinks "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" /var/www/phpmyadmin/config.inc.php
 
     append_to_servers() {
       TO_APPEND=$1
-      sed -i "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" /var/www/phpmyadmin/config.inc.php
+      sed -i --follow-symlinks "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" /var/www/phpmyadmin/config.inc.php
     }
 
     print_by_php_type() {
@@ -146,7 +146,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       ((i++))
     done
 
-    sed -i "/{{ PHPMYADMIN_SERVERS }}/d" /var/www/phpmyadmin/config.inc.php
+    sed -i --follow-symlinks "/{{ PHPMYADMIN_SERVERS }}/d" /var/www/phpmyadmin/config.inc.php
 
   fi
 

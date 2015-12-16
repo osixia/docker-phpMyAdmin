@@ -1,12 +1,13 @@
 NAME = osixia/phpmyadmin
-VERSION = 0.3.3
-
-.PHONY: all build test tag_latest release
+VERSION = 0.3.4
 
 all: build
 
 build:
 	docker build -t $(NAME):$(VERSION) --rm image
+
+build-nocache:
+	docker build -t $(NAME):$(VERSION) --no-cache --rm image
 
 test:
 	env NAME=$(NAME) VERSION=$(VERSION) bats test/test.bats
