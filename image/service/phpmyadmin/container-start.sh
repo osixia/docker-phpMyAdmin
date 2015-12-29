@@ -9,7 +9,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
   if [ "${PHPMYADMIN_HTTPS,,}" == "true" ]; then
 
     # check certificat and key or create it
-    /sbin/ssl-helper "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CRT_FILENAME" "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_KEY_FILENAME" --ca-crt=/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME
+    cfssl-helper phpmyadmin "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CRT_FILENAME" "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_KEY_FILENAME" "/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME"
 
     # add CA certificat config if CA cert exists
     if [ -e "--ca-crt=/container/service/phpmyadmin/assets/apache2/certs/$PHPMYADMIN_HTTPS_CA_CRT_FILENAME" ]; then
@@ -59,49 +59,29 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       fi
     }
 
-    # phpMyAdmin servers config
-    host_infos() {
+    host_info(){
 
       local to_print=$1
-      local infos=(${!2})
 
-      for info in "${infos[@]}"
+      for info in $(complex-bash-env iterate "$2")
       do
-        host_infos_value "$to_print" "$info"
+
+        local isRow=$(complex-bash-env isRow "${!info}")
+
+        if [ $isRow = true ]; then
+          local key=$(complex-bash-env getRowKey "${!info}")
+          local value=$(complex-bash-env getRowValue "${!info}")
+
+          host_info "$to_print['$key']" "$value"
+
+        else
+          local php_value=$(print_by_php_type $info)
+          append_to_servers "$to_print=$php_value;"
+        fi
+
       done
     }
 
-    host_infos_value(){
-
-      local to_print=$1
-      local info_key_value=(${!2})
-
-      local key=${!info_key_value[0]}
-      local value=(${!info_key_value[1]})
-
-      local value_of_value_table=(${!value})
-
-      # it's a table of values
-      if [ "${#value[@]}" -gt "1" ]; then
-        host_infos "$to_print['$key']" ${info_key_value[1]}
-
-      # the value of value is a table
-      elif [ "${#value_of_value_table[@]}" -gt "1" ]; then
-        host_infos_value "$to_print['$key']" "$value"
-
-      # the value contain a not empty variable
-      elif [ -n "${!value}" ]; then
-        local php_value=$(print_by_php_type ${!value})
-        append_to_servers "$to_print['$key']=$php_value;"
-
-      # it's just a not empty value
-      elif [ -n "$value" ]; then
-        local php_value=$(print_by_php_type $value)
-        append_to_servers "$to_print['$key']=$php_value;"
-      fi
-    }
-
-    PHPMYADMIN_CONFIG_DB_TABLES=($PHPMYADMIN_CONFIG_DB_TABLES)
     pma_storage_config (){
 
       append_to_servers "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';"
@@ -110,34 +90,28 @@ if [ ! -e "$FIRST_START_DONE" ]; then
       append_to_servers "\$cfg['Servers'][$1]['controlpass'] = '${PHPMYADMIN_CONFIG_DB_PASSWORD}';"
       append_to_servers "\$cfg['Servers'][$1]['pmadb'] = '${PHPMYADMIN_CONFIG_DB_NAME}';"
 
-      for table_infos in "${PHPMYADMIN_CONFIG_DB_TABLES[@]}"
+      for table in $(complex-bash-env iterate "${PHPMYADMIN_CONFIG_DB_TABLES}")
       do
-        table=(${!table_infos})
-        append_to_servers "\$cfg['Servers'][$1]['${!table[0]}'] = '${!table[1]}';"
+        local key=$(complex-bash-env getRowKey "${!table}")
+        local value=$(complex-bash-env getRowValue "${!table}")
+        append_to_servers "\$cfg['Servers'][$1]['${key}'] = '${value}';"
       done
     }
 
-    PHPMYADMIN_DB_HOSTS=($PHPMYADMIN_DB_HOSTS)
     i=1
-    for host in "${PHPMYADMIN_DB_HOSTS[@]}"
+    for host in $(complex-bash-env iterate "${PHPMYADMIN_DB_HOSTS}")
     do
 
-      #host var contain a variable name, we access to the variable value and cast it to a table
-      infos=(${!host})
+      isRow=$(complex-bash-env isRow "${!host}")
 
-      # it's a table of infos
-      if [ "${#infos[@]}" -gt "1" ]; then
-        append_to_servers "\$cfg['Servers'][$i]['host'] = '${!infos[0]}';"
+      if [ $isRow = true ]; then
+        hostname=$(complex-bash-env getRowKey "${!host}")
+        info=$(complex-bash-env getRowValue "${!host}")
+
+        append_to_servers "\$cfg['Servers'][$i]['host'] = '$hostname';"
         pma_storage_config $i
-        host_infos "\$cfg['Servers'][$i]" ${infos[1]}
+        host_info "\$cfg['Servers'][$i]" "$info"
 
-      # it's just a host name
-      # stored in a variable
-      elif [ -n "${!host}" ]; then
-        append_to_servers "\$cfg['Servers'][$i]['host'] = '${!host}';"
-        pma_storage_config $i
-
-      # directly
       else
         append_to_servers "\$cfg['Servers'][$i]['host'] = '${host}';"
         pma_storage_config $i

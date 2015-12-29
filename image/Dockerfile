@@ -1,9 +1,9 @@
-FROM osixia/web-baseimage:0.1.7
+FROM osixia/web-baseimage:0.1.8-dev
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.5.2
-ENV PHPMYADMIN_SHA1 22a4180d87fa33917feb45782594438c4567e108
+ENV PHPMYADMIN_VERSION 4.5.3.1
+ENV PHPMYADMIN_SHA1 a8cf52c0b40e356bdeaa8ce8b25f31afef2a281d
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
@@ -28,7 +28,7 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
 		&& /container/tool/install-multiple-process-stack \
-		&& /container/tool/install-service-available apache2 php5-fpm ssl-helper-openssl \
+		&& /container/tool/install-service-available apache2 php5-fpm cfssl \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
 			 mariadb-client \
 			 php-gettext \
