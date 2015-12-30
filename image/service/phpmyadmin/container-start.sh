@@ -41,9 +41,16 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     get_salt
     sed -i --follow-symlinks "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" /var/www/phpmyadmin/config.inc.php
 
-    append_to_servers() {
+    append_to_file() {
       TO_APPEND=$1
       sed -i --follow-symlinks "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" /var/www/phpmyadmin/config.inc.php
+    }
+
+    append_value_to_file() {
+      local TO_PRINT=$1
+      local VALUE=$2
+      local php_value=$(print_by_php_type "$VALUE")
+      append_to_file "$TO_PRINT=$php_value;"
     }
 
     print_by_php_type() {
@@ -72,11 +79,13 @@ if [ ! -e "$FIRST_START_DONE" ]; then
           local key=$(complex-bash-env getRowKey "${!info}")
           local value=$(complex-bash-env getRowValue "${!info}")
 
-          host_info "$to_print['$key']" "$value"
-
+          if [ $(complex-bash-env isTable "$value") = true ] || [ $(complex-bash-env isRow "$value") = true ]; then
+            host_info "$to_print['$key']" "$value"
+          else
+            append_value_to_file "$to_print['$key']" "$value"
+          fi
         else
-          local php_value=$(print_by_php_type $info)
-          append_to_servers "$to_print=$php_value;"
+          append_value_to_file "$to_print" "$info"
         fi
 
       done
@@ -84,17 +93,17 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     pma_storage_config (){
 
-      append_to_servers "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';"
-      append_to_servers "\$cfg['Servers'][$1]['controlport'] = '${PHPMYADMIN_CONFIG_DB_PORT}';"
-      append_to_servers "\$cfg['Servers'][$1]['controluser'] = '${PHPMYADMIN_CONFIG_DB_USER}';"
-      append_to_servers "\$cfg['Servers'][$1]['controlpass'] = '${PHPMYADMIN_CONFIG_DB_PASSWORD}';"
-      append_to_servers "\$cfg['Servers'][$1]['pmadb'] = '${PHPMYADMIN_CONFIG_DB_NAME}';"
+      append_to_file "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';"
+      append_to_file "\$cfg['Servers'][$1]['controlport'] = '${PHPMYADMIN_CONFIG_DB_PORT}';"
+      append_to_file "\$cfg['Servers'][$1]['controluser'] = '${PHPMYADMIN_CONFIG_DB_USER}';"
+      append_to_file "\$cfg['Servers'][$1]['controlpass'] = '${PHPMYADMIN_CONFIG_DB_PASSWORD}';"
+      append_to_file "\$cfg['Servers'][$1]['pmadb'] = '${PHPMYADMIN_CONFIG_DB_NAME}';"
 
       for table in $(complex-bash-env iterate "${PHPMYADMIN_CONFIG_DB_TABLES}")
       do
         local key=$(complex-bash-env getRowKey "${!table}")
         local value=$(complex-bash-env getRowValue "${!table}")
-        append_to_servers "\$cfg['Servers'][$1]['${key}'] = '${value}';"
+        append_to_file "\$cfg['Servers'][$1]['${key}'] = '${value}';"
       done
     }
 
@@ -108,12 +117,12 @@ if [ ! -e "$FIRST_START_DONE" ]; then
         hostname=$(complex-bash-env getRowKey "${!host}")
         info=$(complex-bash-env getRowValue "${!host}")
 
-        append_to_servers "\$cfg['Servers'][$i]['host'] = '$hostname';"
+        append_to_file "\$cfg['Servers'][$i]['host'] = '$hostname';"
         pma_storage_config $i
         host_info "\$cfg['Servers'][$i]" "$info"
 
       else
-        append_to_servers "\$cfg['Servers'][$i]['host'] = '${host}';"
+        append_to_file "\$cfg['Servers'][$i]['host'] = '${host}';"
         pma_storage_config $i
       fi
 
