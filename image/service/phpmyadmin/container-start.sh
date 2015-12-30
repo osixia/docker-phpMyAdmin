@@ -54,7 +54,6 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     }
 
     print_by_php_type() {
-
       if [ "$1" == "True" ]; then
         echo "true"
       elif [ "$1" == "False" ]; then
@@ -67,15 +66,11 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     }
 
     host_info(){
-
       local to_print=$1
 
       for info in $(complex-bash-env iterate "$2")
       do
-
-        local isRow=$(complex-bash-env isRow "${!info}")
-
-        if [ $isRow = true ]; then
+        if [ $(complex-bash-env isRow "${!info}") = true ]; then
           local key=$(complex-bash-env getRowKey "${!info}")
           local value=$(complex-bash-env getRowValue "${!info}")
 
@@ -85,12 +80,10 @@ if [ ! -e "$FIRST_START_DONE" ]; then
             append_value_to_file "$to_print['$key']" "$value"
           fi
         fi
-
       done
     }
 
     pma_storage_config (){
-
       append_to_file "\$cfg['Servers'][$1]['controlhost'] = '${PHPMYADMIN_CONFIG_DB_HOST}';"
       append_to_file "\$cfg['Servers'][$1]['controlport'] = '${PHPMYADMIN_CONFIG_DB_PORT}';"
       append_to_file "\$cfg['Servers'][$1]['controluser'] = '${PHPMYADMIN_CONFIG_DB_USER}';"
@@ -108,17 +101,13 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     i=1
     for host in $(complex-bash-env iterate "${PHPMYADMIN_DB_HOSTS}")
     do
-
-      isRow=$(complex-bash-env isRow "${!host}")
-
-      if [ $isRow = true ]; then
+      if [ $(complex-bash-env isRow "${!host}") = true ]; then
         hostname=$(complex-bash-env getRowKey "${!host}")
         info=$(complex-bash-env getRowValue "${!host}")
 
         append_to_file "\$cfg['Servers'][$i]['host'] = '$hostname';"
         pma_storage_config $i
         host_info "\$cfg['Servers'][$i]" "$info"
-
       else
         append_to_file "\$cfg['Servers'][$i]['host'] = '${host}';"
         pma_storage_config $i
@@ -128,7 +117,6 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     done
 
     sed -i --follow-symlinks "/{{ PHPMYADMIN_SERVERS }}/d" /var/www/phpmyadmin/config.inc.php
-
   fi
 
   touch $FIRST_START_DONE
