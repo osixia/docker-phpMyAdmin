@@ -1,4 +1,4 @@
-FROM osixia/web-baseimage:0.1.8-dev
+FROM osixia/web-baseimage:0.1.8
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
@@ -7,10 +7,6 @@ ENV PHPMYADMIN_SHA1 a8cf52c0b40e356bdeaa8ce8b25f31afef2a281d
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-
-# Use baseimage's init system.
-# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
-CMD ["/container/tool/run"]
 
 # Install apache2 and php5-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
@@ -27,16 +23,16 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
-		&& /container/tool/install-multiple-process-stack \
-		&& /container/tool/install-service-available apache2 php5-fpm cfssl \
+		&& /container/tool/add-multiple-process-stack \
+		&& /container/tool/add-service-available :apache2 :php5-fpm :cfssl \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-			 mariadb-client \
-			 php-gettext \
-			 php5-json \
-			 php5-mcrypt \
-			 php5-mysql \
-			 php5-gd \
-			 curl \
+       curl \
+       mariadb-client \
+       php5-gd \
+       php5-json \
+       php5-mcrypt \
+       php5-mysql \
+       php-gettext \
 		&& curl -o phpmyadmin.tar.gz -SL http://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
 		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
 		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
@@ -54,7 +50,7 @@ RUN /container/tool/install-service \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add default env variables
-ADD env.yaml /container/environment/99-default/env.yaml
+ADD environment /container/environment/99-default
 
 # Set wordpress data directory in a data volume
 VOLUME ["/var/www/phpmyadmin"]

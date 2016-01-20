@@ -49,8 +49,11 @@ PHPMYADMIN_SERVER_ADMIN: webmaster@example.org
 
 # To use your custom certificat and key 2 options :
 # - add them in service/phpmyadmin/assets/apache2/ssl and build the image
-# - or during docker run mount a data volume with thoses files to /container/service/phpmyadmin/apache2/ssl
+# - or during docker run mount a data volume with those files to /container/service/phpmyadmin/apache2/ssl
 PHPMYADMIN_HTTPS: true
 PHPMYADMIN_HTTPS_CRT_FILENAME: phpmyadmin.crt
 PHPMYADMIN_HTTPS_KEY_FILENAME: phpmyadmin.key
 PHPMYADMIN_HTTPS_CA_CRT_FILENAME: ca.crt
+
+PHPMYADMIN_CFSSL_PREFIX: phpmyadmin
+MARIADB_CLIENT_CFSSL_PREFIX: database
