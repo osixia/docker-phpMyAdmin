@@ -2,8 +2,8 @@
 # this script is run during the image build
 
 # add phpMyAdmin virtualhosts
-ln -s /container/service/phpmyadmin/assets/apache2/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
-ln -s /container/service/phpmyadmin/assets/apache2/phpmyadmin-ssl.conf /etc/apache2/sites-available/phpmyadmin-ssl.conf
+ln -sf /container/service/phpmyadmin/assets/apache2/phpmyadmin.conf /etc/apache2/sites-available/phpmyadmin.conf
+ln -sf /container/service/phpmyadmin/assets/apache2/phpmyadmin-ssl.conf /etc/apache2/sites-available/phpmyadmin-ssl.conf
 
 cat /container/service/phpmyadmin/assets/php5-fpm/pool.conf >> /etc/php5/fpm/pool.d/www.conf
 rm /container/service/phpmyadmin/assets/php5-fpm/pool.conf
@@ -17,7 +17,7 @@ rm -rf /var/www/html
 
 # correct issue
 # https://bugs.launchpad.net/ubuntu/+source/php-mcrypt/+bug/1240590
-ln -s ../conf.d/mcrypt.so /etc/php5/mods-available/mcrypt.so
+ln -sf ../conf.d/mcrypt.so /etc/php5/mods-available/mcrypt.so
 php5enmod mcrypt
 
 # delete unnecessary files
