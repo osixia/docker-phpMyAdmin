@@ -1,11 +1,12 @@
 # osixia/phpmyadmin
 
-[![](https://badge.imagelayers.io/osixia/phpmyadmin:latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest 'Get your own badge on imagelayers.io') | Latest release: 0.3.5 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/phpmyadmin/) 
+[![](https://badge.imagelayers.io/osixia/phpmyadmin:latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest 'Get your own badge on imagelayers.io') | Latest release: 0.3.5 - phpMyAdmin 4.5.4.1 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/phpmyadmin/) 
 
 A docker image to run phpMyAdmin.
 > [phpmyadmin.net](https://www.phpmyadmin.net)
 
 - [Quick start](#quick-start)
+	- [MariaDB & phpMyAdmin in 1'](#mariadb--phpmyadmin-in-1)
 - [Beginner Guide](#beginner-guide)
 	- [Use your own phpMyAdmin config](#use-your-own-phpmyadmin-config)
 	- [HTTPS](#https)
@@ -36,6 +37,29 @@ Run a phpMyAdmin docker image by replacing `ldap.example.com` with your mysql ho
            --detach osixia/phpmyadmin:0.3.5
 
 That's it :) you can access phpMyAdmin on [https://localhost:6443](https://localhost:6443)
+
+### MariaDB & phpMyAdmin in 1'
+
+Example script:
+
+    #!/bin/bash -e
+
+    # Run mariadb, save the container id in MARIADB_CID and get its IP:
+    MARIADB_CID=$(docker run --hostname db.example.org --env MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" --detach osixia/mariadb:0.2.9)
+		MARIADB_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $MARIADB_CID)
+
+    # Run phpMyAdmin and set database host to mariadb container ip
+    PHPMY_CID=$(docker run --hostname phpmyadmin.example.org --env PHPMYADMIN_DB_HOSTS=$MARIADB_IP --detach osixia/phpmyadmin:0.3.5)
+
+    # We get phpMyAdmin container ip
+    PHPMY_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $PHPMY_CID)
+
+		echo "MariaDB container IP: $MARIADB_IP"
+		echo "phpMyAdmin container IP $PHPMY_IP"
+		echo ""
+    echo "Go to: https://$PHPMY_IP"
+    echo "Login: admin"
+    echo "Password: admin"
 
 ## Beginner Guide
 
