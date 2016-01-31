@@ -30,7 +30,7 @@ A docker image to run phpMyAdmin.
 
 ## Quick start
 
-Run a phpMyAdmin docker image by replacing `ldap.example.com` with your mysql host or IP :
+Run a phpMyAdmin docker image by replacing `phpmyadmin.example.com` with your mysql host or IP :
 
     docker run -p 6443:443 \
            --env PHPMYADMIN_DB_HOSTS=db.example.com \
