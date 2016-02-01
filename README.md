@@ -1,6 +1,13 @@
 # osixia/phpmyadmin
 
-[![](https://badge.imagelayers.io/osixia/phpmyadmin:latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest 'Get your own badge on imagelayers.io') | Latest release: 0.3.5 - phpMyAdmin 4.5.4.1 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/phpmyadmin/) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/osixia/phpmyadmin.svg)][hub]
+[![Docker Stars](https://img.shields.io/docker/stars/osixia/phpmyadmin.svg)][hub]
+[![Image Size](https://img.shields.io/imagelayers/image-size/osixia/phpmyadmin/latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest)
+[![Image Layers](https://img.shields.io/imagelayers/layers/osixia/phpmyadmin/latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest)
+
+[hub]: https://hub.docker.com/r/osixia/phpmyadmin/
+
+Latest release: 0.3.5 - phpMyAdmin 4.5.4.1 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/phpmyadmin/) 
 
 A docker image to run phpMyAdmin.
 > [phpmyadmin.net](https://www.phpmyadmin.net)
