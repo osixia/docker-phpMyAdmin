@@ -30,7 +30,7 @@ A docker image to run phpMyAdmin.
 
 ## Quick start
 
-Run a phpMyAdmin docker image by replacing `phpmyadmin.example.com` with your mysql host or IP :
+Run a phpMyAdmin docker image by replacing `db.example.com` with your mysql host or IP :
 
     docker run -p 6443:443 \
            --env PHPMYADMIN_DB_HOSTS=db.example.com \
@@ -123,6 +123,8 @@ Environment variables defaults are set in **image/environment/default.yaml**
 
 See how to [set your own environment variables](#set-your-own-environment-variables)
 
+- **PHPMYADMIN_CONFIG_ABSOLUTE_URI**: Sets here the complete URL (with full path) to your phpMyAdmin installation’s directory. E.g. http://www.example.net/path_to_your_phpMyAdmin_directory/. Note also that the URL on most of web servers are case–sensitive. Don’t forget the trailing slash at the end. it is advisable to try leaving this blank. In most cases phpMyAdmin automatically detects the proper setting. Defaults to `empty`.
+
 - **PHPMYADMIN_DB_HOSTS**: Set phpMyAdmin server config. Defaults to :
 
   ```yaml
@@ -139,41 +141,64 @@ See how to [set your own environment variables](#set-your-own-environment-variab
   ```
   This will be converted in the phpmyadmin config.inc.php file to :
   ```php5
-  $servers->newServer('ldap_pla');
-  $servers->setValue('server','name','ldap.example.org');
-  $servers->setValue('server','host','ldap.example.org');
-  $servers->setValue('server','tls',true);
-  $servers->setValue('login','bind_id','cn=admin,dc=example,dc=org');
-  $servers->newServer('ldap_pla');
-  $servers->setValue('server','name','ldap2.example.org');
-  $servers->setValue('server','host','ldap2.example.org');
-  $servers->newServer('ldap_pla');
-  $servers->setValue('server','name','ldap3.example.org');
-  $servers->setValue('server','host','ldap3.example.org');
+	$cfg['Servers'][1]['host'] = 'db1.example.org';
+	$cfg['Servers'][1]['port']='3306';
+	$cfg['Servers'][1]['connect_type']='tcp';
+	$cfg['Servers'][1]['auth_type']='cookie';
+	$cfg['Servers'][1]['ssl']=true;
+	$cfg['Servers'][1]['ssl_ca']='/container/service/mariadb-client/assets/certs/ca.crt';
+	$cfg['Servers'][1]['ssl_cert']='/container/service/mariadb-client/assets/certs/cert.crt';
+	$cfg['Servers'][1]['ssl_key']='/container/service/mariadb-client/assets/certs/cert.key';
+	$cfg['Servers'][2]['host'] = 'db2.example.org';
+	$cfg['Servers'][3]['host'] = 'db3.example.org';
   ```
   All server configuration are available, just add the needed entries, for example:  
   ```yaml
-  - ldap.example.org:
-    - server:
-      - tls: true
-      - port: 636
-      - force_may: array('uidNumber','gidNumber','sambaSID')
-    - login:
-      - bind_id: cn=admin,dc=example,dc=org
-      - bind_pass: p0p!
-    - auto_number:
-      - min: 1000
-  - ldap2.example.org
-  - ldap3.example.org
+	- db1.example.org:
+    - port: 3306
+    - connect_type: tcp
+    - auth_type: cookie
+		- compress: false
+		- user: dbuser
+		- nopassword: true
+  - db2.example.org
+  - db3.example.org
   ```
 
-  See complete list: http://phpmyadmin.sourceforge.net/wiki/index.php/LDAP_server_definitions
+  See complete list: http://docs.phpmyadmin.net/fr/latest/config.html, $cfg['Servers'][$i] configs.
 
   If you want to set this variable at docker run command add the tag `#PYTHON2BASH:` and convert the yaml in python:
 
-		docker run --env PHPLDAPADMIN_LDAP_HOSTS="#PYTHON2BASH:[{'ldap.example.org': [{'server': [{'tls': True}]},{'login': [{'bind_id': 'cn=admin,dc=example,dc=org'}]}]}, 'ldap2.example.org', 'ldap3.example.org']" --detach osixia/phpmyadmin:0.3.5
+		docker run --env PHPLDAPADMIN_LDAP_HOSTS="#PYTHON2BASH:[{'db1.example.org': [{'port': 3306},{'connect_type': 'tcp'},{'auth_type': 'cookie'},{'ssl': True},{'ssl_ca': '/container/service/mariadb-client/assets/certs/ca.crt'},{'ssl_cert': '/container/service/mariadb-client/assets/certs/cert.crt'},{'ssl_key': '/container/service/mariadb-client/assets/certs/cert.key'}]},'db2.example.org','db3.example.org']" --detach osixia/phpmyadmin:0.3.5
 
   To convert yaml to python online: http://yaml-online-parser.appspot.com/
+
+- **PHPMYADMIN_CONFIG_DB_HOST**: Set $cfg['Servers'][$i]['controlhost']. Defaults to `empty`.
+- **PHPMYADMIN_CONFIG_DB_PORT**: Set $cfg['Servers'][$i]['controlport']. Defaults to `empty`.
+- **PHPMYADMIN_CONFIG_DB_NAME**: Set $cfg['Servers'][$i]['pmadb']. Defaults to `empty`.
+- **PHPMYADMIN_CONFIG_DB_USER**:  Set $cfg['Servers'][$i]['controluser']. Defaults to `empty`.
+- **PHPMYADMIN_CONFIG_DB_PASSWORD**:  Set $cfg['Servers'][$i]['controlpass']. Defaults to `empty`.
+
+- **PHPMYADMIN_CONFIG_DB_TABLES**: phpMyadmin config database tables names added to each server config. Defaults to:
+  ```yaml
+	- bookmarktable: pma__bookmark
+  - relation: pma__relation
+  - table_info: pma__table_info
+  - table_coords: pma__table_coords
+  - pdf_pages: pma__pdf_pages
+  - column_info: pma__column_info
+  - history: pma__history
+  - table_uiprefs: pma__table_uiprefs
+  - tracking: pma__tracking
+  - userconfig: pma__userconfig
+  - recent: pma__recent
+  - favorite: pma__favorite
+  - users: pma__users
+  - usergroups: pma__usergroups
+  - navigationhiding: pma__navigationhiding
+  - savedsearches: pma__savedsearches
+  - central_columns: pma__central_columns
+	```
 
 Apache :
 - **PHPMYADMIN_SERVER_ADMIN**: Server admin email. Defaults to `webmaster@example.org`
