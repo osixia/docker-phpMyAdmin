@@ -49,24 +49,16 @@ That's it :) you can access phpMyAdmin on [https://localhost:6443](https://local
 
 Example script:
 
-    #!/bin/bash -e
+		#!/bin/bash -e
+		docker run --name bdd-service --hostname bdd-service --env MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" --detach osixia/mariadb:0.2.9
 
-    # Run mariadb, save the container id in MARIADB_CID and get its IP:
-    MARIADB_CID=$(docker run --hostname db.example.org --env MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" --detach osixia/mariadb:0.2.9)
-		MARIADB_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $MARIADB_CID)
+		docker run --name phpmyadmin-service --hostname phpmyadmin-service --link bdd-service:bdd-host --env PHPMYADMIN_DB_HOSTS=bdd-host --detach osixia/phpmyadmin:0.3.5
 
-    # Run phpMyAdmin and set database host to mariadb container ip
-    PHPMY_CID=$(docker run --hostname phpmyadmin.example.org --env PHPMYADMIN_DB_HOSTS=$MARIADB_IP --detach osixia/phpmyadmin:0.3.5)
+		PHPMY_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" phpmyadmin-service)
 
-    # We get phpMyAdmin container ip
-    PHPMY_IP=$(docker inspect -f "{{ .NetworkSettings.IPAddress }}" $PHPMY_CID)
-
-		echo "MariaDB container IP: $MARIADB_IP"
-		echo "phpMyAdmin container IP $PHPMY_IP"
-		echo ""
-    echo "Go to: https://$PHPMY_IP"
-    echo "Login: admin"
-    echo "Password: admin"
+		echo "Go to: https://$PHPMY_IP"
+		echo "Login: admin"
+		echo "Password: admin"
 
 ## Beginner Guide
 
@@ -176,7 +168,7 @@ See how to [set your own environment variables](#set-your-own-environment-variab
 
   If you want to set this variable at docker run command add the tag `#PYTHON2BASH:` and convert the yaml in python:
 
-		docker run --env PHPLDAPADMIN_LDAP_HOSTS="#PYTHON2BASH:[{'db1.example.org': [{'port': 3306},{'connect_type': 'tcp'},{'auth_type': 'cookie'},{'ssl': True},{'ssl_ca': '/container/service/mariadb-client/assets/certs/ca.crt'},{'ssl_cert': '/container/service/mariadb-client/assets/certs/cert.crt'},{'ssl_key': '/container/service/mariadb-client/assets/certs/cert.key'}]},'db2.example.org','db3.example.org']" --detach osixia/phpmyadmin:0.3.5
+		docker run --env PHPMYADMIN_DB_HOSTS="#PYTHON2BASH:[{'db1.example.org': [{'port': 3306},{'connect_type': 'tcp'},{'auth_type': 'cookie'},{'ssl': True},{'ssl_ca': '/container/service/mariadb-client/assets/certs/ca.crt'},{'ssl_cert': '/container/service/mariadb-client/assets/certs/cert.crt'},{'ssl_key': '/container/service/mariadb-client/assets/certs/cert.key'}]},'db2.example.org','db3.example.org']" --detach osixia/phpmyadmin:0.3.5
 
   To convert yaml to python online: http://yaml-online-parser.appspot.com/
 
