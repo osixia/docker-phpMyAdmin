@@ -37,17 +37,17 @@ RUN apt-get update \
 		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
 		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
 		&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap \
-		&& apt-get remove -y --purge --auto-remove curl
+		&& apt-get remove -y --purge --auto-remove curl \
+    && rm phpmyadmin.tar.gz \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add service directory to /container/service
 ADD service /container/service
 
 # Use baseimage install-service script and clean all
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/install-service
-RUN /container/tool/install-service \
-		&& rm phpmyadmin.tar.gz \
-		&& apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN /container/tool/install-service
 
 # Add default env variables
 ADD environment /container/environment/99-default
