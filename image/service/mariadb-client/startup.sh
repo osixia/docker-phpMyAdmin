@@ -37,6 +37,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
 
     if [ -n "$ssl_cert" ] && [ -n "$ssl_key" ] && [ -n "$ssl_ca" ]; then
       cfssl-helper ${MARIADB_CLIENT_CFSSL_PREFIX} "$ssl_cert" "$ssl_key" "$ssl_ca"
+      chown -R www-data:www-data $ssl_cert $ssl_key $ssl_ca
     fi
 
   }
