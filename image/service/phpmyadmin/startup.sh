@@ -4,6 +4,8 @@
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/log-helper
 log-helper level eq trace && set -x
 
+FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-phpmyadmin-first-start-done"
+
 #
 # HTTPS config
 #
@@ -31,16 +33,24 @@ fi
 
 a2ensite phpmyadmin | log-helper debug
 
+#
+# phpMyAdmin directory is empty, we use the bootstrap
+#
+if [ ! "$(ls -A /var/www/phpmyadmin)" ]; then
 
-FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-phpmyadmin-first-start-done"
-# container first start
-if [ ! -e "$FIRST_START_DONE" ]; then
+  log-helper info "Bootstap phpMyAdmin..."
 
-  # phpMyAdmin directory is empty, we use the bootstrap
-  if [ ! "$(ls -A /var/www/phpmyadmin)" ]; then
-    cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
-    rm -rf /var/www/phpmyadmin_bootstrap
-    rm -f /var/www/phpmyadmin/config.inc.php
+  cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
+  rm -rf /var/www/phpmyadmin_bootstrap
+  rm -f /var/www/phpmyadmin/config.inc.php
+fi
+
+
+# if there is no config
+if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
+
+  # on container first start customise the container config file
+  if [ ! -e "$FIRST_START_DONE" ]; then
 
     # phpMyAdmin Absolute URI
     sed -i "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
@@ -129,15 +139,13 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     done
 
     sed -i "/{{ PHPMYADMIN_SERVERS }}/d" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
+
+    touch $FIRST_START_DONE
   fi
 
-  touch $FIRST_START_DONE
-fi
-
-# if there is no config file link service config
-if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
-  log-helper debug  "link ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php to/var/www/phpmyadmin/config.inc.php"
+  log-helper debug "link ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php to/var/www/phpmyadmin/config.inc.php"
   ln -sf ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
+
 fi
 
 # Fix file permission
