@@ -1,16 +1,12 @@
-FROM osixia/web-baseimage:0.1.7
+FROM osixia/web-baseimage:0.1.9
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.5.2
-ENV PHPMYADMIN_SHA1 22a4180d87fa33917feb45782594438c4567e108
+ENV PHPMYADMIN_VERSION 4.5.4.1
+ENV PHPMYADMIN_SHA1 1962ba69e0a8ac13d67da7676faff6561ce022d6
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
-
-# Use baseimage's init system.
-# https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/run
-CMD ["/container/tool/run"]
 
 # Install apache2 and php5-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
@@ -27,34 +23,34 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
-		&& /container/tool/install-multiple-process-stack \
-		&& /container/tool/install-service-available apache2 php5-fpm ssl-helper-openssl \
+		&& /container/tool/add-multiple-process-stack \
+		&& /container/tool/add-service-available :apache2 :php5-fpm :cfssl \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-			 mariadb-client \
-			 php-gettext \
-			 php5-json \
-			 php5-mcrypt \
-			 php5-mysql \
-			 php5-gd \
-			 curl \
+       curl \
+       mariadb-client \
+       php5-gd \
+       php5-json \
+       php5-mcrypt \
+       php5-mysql \
+       php-gettext \
 		&& curl -o phpmyadmin.tar.gz -SL http://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
 		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
 		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
 		&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap \
-		&& apt-get remove -y --purge --auto-remove curl
+		&& apt-get remove -y --purge --auto-remove curl \
+    && rm phpmyadmin.tar.gz \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add service directory to /container/service
 ADD service /container/service
 
-# Use baseimage install-service script and clean all
+# Use baseimage install-service script
 # https://github.com/osixia/docker-light-baseimage/blob/stable/image/tool/install-service
-RUN /container/tool/install-service \
-		&& rm phpmyadmin.tar.gz \
-		&& apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN /container/tool/install-service
 
 # Add default env variables
-ADD env.yaml /container/environment/env.yaml
+ADD environment /container/environment/99-default
 
 # Set wordpress data directory in a data volume
 VOLUME ["/var/www/phpmyadmin"]
