@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.6
+  - Upgrade baseimage: web-baseimage:0.1.10
+  - Add PHPMYADMIN_SERVER_PATH environment variable
+  - phpMyAdmin 4.6.3
+
 ## 0.3.5
   - Upgrade baseimage: web-baseimage:0.1.9
   - phpMyAdmin 4.5.4.1

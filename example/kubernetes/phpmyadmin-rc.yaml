@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: phpmyadmin
-          image: osixia/phpmyadmin:0.3.5
+          image: osixia/phpmyadmin:0.3.6
           volumeMounts:
             - name: phpmyadmin-certs
               mountPath: /container/service/phpmyadmin/assets/apache2/certs
@@ -42,6 +42,8 @@ spec:
               value: "[{'bookmarktable': 'pma__bookmark'},{'relation': 'pma__relation'},{'table_info': 'pma__table_info'},{'table_coords': 'pma__table_coords'},{'pdf_pages': 'pma__pdf_pages'},{'column_info': 'pma__column_info'},{'history': 'pma__history'},{'table_uiprefs': 'pma__table_uiprefs'},{'tracking': 'pma__tracking'},{'userconfig': 'pma__userconfig'},{'recent': 'pma__recent'},{'favorite': 'pma__favorite'},{'users': 'pma__users'},{'usergroups': 'pma__usergroups'},{'navigationhiding': 'pma__navigationhiding'},{'savedsearches': 'pma__savedsearches'},{'central_columns': 'pma__central_columns'}]"
             - name: PHPMYADMIN_SERVER_ADMIN
               value: "webmaster@osixia.net"
+            - name: PHPMYADMIN_SERVER_PATH
+              value: "/phpmyadmin"
             - name: PHPMYADMIN_HTTPS
               value: "true"
             - name: PHPMYADMIN_HTTPS_CRT_FILENAME
