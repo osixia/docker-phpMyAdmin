@@ -43,6 +43,7 @@ PHPMYADMIN_CONFIG_ABSOLUTE_URI:
 
 # Apache
 PHPMYADMIN_SERVER_ADMIN: webmaster@example.org
+PHPMYADMIN_SERVER_PATH: /phpmyadmin
 
 # Self signed certificat will be generated
 # if PHPMYADMIN_HTTPS is set to true and no certificat and key are provided.
