@@ -210,8 +210,8 @@ HTTPS :
 - **PHPMYADMIN_HTTPS_CA_CRT_FILENAME**: Apache ssl CA certificate filename. Defaults to `ca.crt`
 
 Other environment variables:
-- **PHPMYADMIN_CFSSL_PREFIX**: cfssl environment variables prefix. Defaults to `phpmyadmin`, cfssl-helper first search config from PHPMYADMIN_CFSSL_* variables, before CFSSL_* variables.
-- **MARIADB_CLIENT_CFSSL_PREFIX**: cfssl environment variables prefix. Defaults to `database`, cfssl-helper first search config from DATABASE_CFSSL_* variables, before CFSSL_* variables.
+- **PHPMYADMIN_SSL_HELPER_PREFIX**: ssl-helper environment variables prefix. Defaults to `phpmyadmin`, ssl-helper first search config from PHPMYADMIN_SSL_HELPER_* variables, before SSL_HELPER_* variables.
+- **MARIADB_CLIENT_SSL_HELPER_PREFIX**: ssl-helper environment variables prefix. Defaults to `database`, ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.
 
 ### Set your own environment variables
 

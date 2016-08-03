@@ -9,7 +9,7 @@ FIRST_START_DONE="${CONTAINER_STATE_DIR}/docker-mariadb-client-first-start-done"
 if [ ! -e "$FIRST_START_DONE" ]; then
 
   #
-  # Search ssl config in hosts config and call cfssl-helper
+  # Search ssl config in hosts config and call ssl-helper
   #
   function host_info() {
 
@@ -36,7 +36,7 @@ if [ ! -e "$FIRST_START_DONE" ]; then
     done
 
     if [ -n "$ssl_cert" ] && [ -n "$ssl_key" ] && [ -n "$ssl_ca" ]; then
-      cfssl-helper ${MARIADB_CLIENT_CFSSL_PREFIX} "$ssl_cert" "$ssl_key" "$ssl_ca"
+      ssl-helper ${MARIADB_CLIENT_SSL_HELPER_PREFIX} "$ssl_cert" "$ssl_key" "$ssl_ca"
       chown -R www-data:www-data $ssl_cert $ssl_key $ssl_ca
     fi
 
