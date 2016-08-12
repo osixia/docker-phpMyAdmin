@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.7
+  - Upgrade baseimage: web-baseimage:0.1.11
+
 ## 0.3.6
   - Upgrade baseimage: web-baseimage:0.1.10
   - Add PHPMYADMIN_SERVER_PATH environment variable
