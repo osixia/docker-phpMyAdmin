@@ -36,7 +36,7 @@ a2ensite phpmyadmin | log-helper debug
 #
 # phpMyAdmin directory is empty, we use the bootstrap
 #
-if [ ! "$(ls -A /var/www/phpmyadmin)" ]; then
+if [ ! "$(ls -A -I lost+found /var/www/phpmyadmin)" ]; then
 
   log-helper info "Bootstap phpMyAdmin..."
 
