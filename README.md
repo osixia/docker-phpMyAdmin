@@ -2,8 +2,6 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/osixia/phpmyadmin.svg)][hub]
 [![Docker Stars](https://img.shields.io/docker/stars/osixia/phpmyadmin.svg)][hub]
-[![Image Size](https://img.shields.io/imagelayers/image-size/osixia/phpmyadmin/latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest)
-[![Image Layers](https://img.shields.io/imagelayers/layers/osixia/phpmyadmin/latest.svg)](https://imagelayers.io/?images=osixia/phpmyadmin:latest)
 
 [hub]: https://hub.docker.com/r/osixia/phpmyadmin/
 
