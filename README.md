@@ -207,6 +207,9 @@ HTTPS :
 - **PHPMYADMIN_HTTPS_KEY_FILENAME**: Apache ssl certificate private key filename. Defaults to `phpmyadmin.key`
 - **PHPMYADMIN_HTTPS_CA_CRT_FILENAME**: Apache ssl CA certificate filename. Defaults to `ca.crt`
 
+Reverse proxy HTTPS :
+- **PHPMYADMIN_TRUST_PROXY_SSL**: Set to `true` to trust X-Forwarded-Proto header
+
 Other environment variables:
 - **PHPMYADMIN_SSL_HELPER_PREFIX**: ssl-helper environment variables prefix. Defaults to `phpmyadmin`, ssl-helper first search config from PHPMYADMIN_SSL_HELPER_* variables, before SSL_HELPER_* variables.
 - **MARIADB_CLIENT_SSL_HELPER_PREFIX**: ssl-helper environment variables prefix. Defaults to `database`, ssl-helper first search config from DATABASE_SSL_HELPER_* variables, before SSL_HELPER_* variables.

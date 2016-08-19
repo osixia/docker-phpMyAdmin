@@ -1,46 +1,3 @@
-# phpMyAdmin db hosts
-PHPMYADMIN_DB_HOSTS:
-  - db1.example.org:
-    - port: 3306
-    - connect_type: tcp
-    - auth_type: cookie
-    - ssl: true
-    - ssl_ca: /container/service/mariadb-client/assets/certs/ca.crt
-    - ssl_cert: /container/service/mariadb-client/assets/certs/cert.crt
-    - ssl_key: /container/service/mariadb-client/assets/certs/cert.key
-  - db2.example.org
-  - db3.example.org
-
-# phpMyAdmin configuration storage
-# http://docs.phpmyadmin.net/en/latest/setup.html#phpmyadmin-configuration-storage
-# leave empty if you don't want to use a central phpMyAdmin config database
-PHPMYADMIN_CONFIG_DB_HOST:
-PHPMYADMIN_CONFIG_DB_PORT:
-PHPMYADMIN_CONFIG_DB_NAME:
-PHPMYADMIN_CONFIG_DB_USER:
-PHPMYADMIN_CONFIG_DB_PASSWORD:
-
-PHPMYADMIN_CONFIG_DB_TABLES:
-  - bookmarktable: pma__bookmark
-  - relation: pma__relation
-  - table_info: pma__table_info
-  - table_coords: pma__table_coords
-  - pdf_pages: pma__pdf_pages
-  - column_info: pma__column_info
-  - history: pma__history
-  - table_uiprefs: pma__table_uiprefs
-  - tracking: pma__tracking
-  - userconfig: pma__userconfig
-  - recent: pma__recent
-  - favorite: pma__favorite
-  - users: pma__users
-  - usergroups: pma__usergroups
-  - navigationhiding: pma__navigationhiding
-  - savedsearches: pma__savedsearches
-  - central_columns: pma__central_columns
-
-PHPMYADMIN_CONFIG_ABSOLUTE_URI:
-
 # Apache
 PHPMYADMIN_SERVER_ADMIN: webmaster@example.org
 PHPMYADMIN_SERVER_PATH: /phpmyadmin
@@ -56,5 +13,6 @@ PHPMYADMIN_HTTPS_CRT_FILENAME: phpmyadmin.crt
 PHPMYADMIN_HTTPS_KEY_FILENAME: phpmyadmin.key
 PHPMYADMIN_HTTPS_CA_CRT_FILENAME: ca.crt
 
+PHPMYADMIN_TRUST_PROXY_SSL: false
+
 PHPMYADMIN_SSL_HELPER_PREFIX: phpmyadmin
-MARIADB_CLIENT_SSL_HELPER_PREFIX: database

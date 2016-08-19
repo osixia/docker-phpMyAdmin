@@ -31,6 +31,13 @@ else
   ln -sf ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/apache2/http.conf /etc/apache2/sites-available/phpmyadmin.conf
 fi
 
+#
+# Reverse proxy config
+#
+if [ "${PHPMYADMIN_TRUST_PROXY_SSL,,}" == "true" ]; then
+  echo 'SetEnvIf X-Forwarded-Proto "^https$" HTTPS=on' > /etc/apache2/mods-enabled/remoteip_ssl.conf
+fi
+
 a2ensite phpmyadmin | log-helper debug
 
 #
