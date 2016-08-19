@@ -2,8 +2,8 @@ FROM osixia/web-baseimage:0.1.11
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.6.3
-ENV PHPMYADMIN_SHA1 83712152daddbf93b9510af9a8e62e5503c7c636
+ENV PHPMYADMIN_VERSION 4.6.4
+ENV PHPMYADMIN_SHA1 e057c8f28a2cb96a1cd6ee02bdea6370b95ca422
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1

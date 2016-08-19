@@ -2,6 +2,7 @@
 
 ## 0.3.7
   - Upgrade baseimage: web-baseimage:0.1.11
+  - phpMyAdmin 4.6.4
 
 ## 0.3.6
   - Upgrade baseimage: web-baseimage:0.1.10
