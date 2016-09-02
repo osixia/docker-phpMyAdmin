@@ -31,7 +31,7 @@ load test_helper
   rm -f $tmp_file
 
   # we start a new mariadb container
-  DB_CID=$(docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.9)
+  DB_CID=$(docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.11)
   DB_IP=$(get_container_ip_by_cid $DB_CID)
 
   # we start the wordpress container and set PHPMYADMIN_DB_HOSTS
