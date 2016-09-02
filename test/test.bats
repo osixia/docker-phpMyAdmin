@@ -14,7 +14,7 @@ load test_helper
   rm -f $tmp_file
 
   run_image
-  wait_service apache2 php5-fpm
+  wait_process apache2 php5-fpm
   curl --silent --insecure https://$CONTAINER_IP >> $tmp_file
   run grep -c "loginform" $tmp_file
   rm $tmp_file
@@ -31,17 +31,17 @@ load test_helper
   rm -f $tmp_file
 
   # we start a new mariadb container
-  DB_CID=$(docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.9)
+  DB_CID=$(docker run -e MARIADB_ROOT_ALLOWED_NETWORKS="#PYTHON2BASH:['172.17.%.%', 'localhost', '127.0.0.1', '::1']" -d osixia/mariadb:0.2.11)
   DB_IP=$(get_container_ip_by_cid $DB_CID)
 
   # we start the wordpress container and set PHPMYADMIN_DB_HOSTS
   run_image -e PHPMYADMIN_DB_HOSTS=$DB_IP
 
   # wait mariadb
-  wait_service_by_cid $DB_CID mysqld
+  wait_process_by_cid $DB_CID mysqld
 
   # wait wordpress container apache2 service
-  wait_service apache2 php5-fpm
+  wait_process apache2 php5-fpm
 
   curl -L --silent --insecure -c $BATS_TMPDIR/cookie.txt https://$CONTAINER_IP >> $tmp_file
 
