@@ -14,7 +14,7 @@ load test_helper
   rm -f $tmp_file
 
   run_image
-  wait_service apache2 php5-fpm
+  wait_process apache2 php5-fpm
   curl --silent --insecure https://$CONTAINER_IP >> $tmp_file
   run grep -c "loginform" $tmp_file
   rm $tmp_file
@@ -38,10 +38,10 @@ load test_helper
   run_image -e PHPMYADMIN_DB_HOSTS=$DB_IP
 
   # wait mariadb
-  wait_service_by_cid $DB_CID mysqld
+  wait_process_by_cid $DB_CID mysqld
 
   # wait wordpress container apache2 service
-  wait_service apache2 php5-fpm
+  wait_process apache2 php5-fpm
 
   curl -L --silent --insecure -c $BATS_TMPDIR/cookie.txt https://$CONTAINER_IP >> $tmp_file
 
