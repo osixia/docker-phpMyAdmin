@@ -2,12 +2,13 @@
 
 [![Docker Pulls](https://img.shields.io/docker/pulls/osixia/phpmyadmin.svg)][hub]
 [![Docker Stars](https://img.shields.io/docker/stars/osixia/phpmyadmin.svg)][hub]
+[![](https://images.microbadger.com/badges/image/osixia/phpmyadmin.svg)](http://microbadger.com/images/osixia/phpmyadmin "Get your own image badge on microbadger.com")
 
 [hub]: https://hub.docker.com/r/osixia/phpmyadmin/
 
 Latest release: 0.3.7 - phpMyAdmin 4.6.3 - [Changelog](CHANGELOG.md) | [Docker Hub](https://hub.docker.com/r/osixia/phpmyadmin/) 
 
-A docker image to run phpMyAdmin.
+**A docker image to run phpMyAdmin.**
 > [phpmyadmin.net](https://www.phpmyadmin.net)
 
 - [Quick start](#quick-start)
