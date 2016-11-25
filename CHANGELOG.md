@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.6.5
+  - Upgrade baseimage: web-baseimage:0.1.12
+  - phpMyAdmin 4.6.5
+  - We now use the phpMyAdmin version number as docker image tag
+
 ## 0.3.7
   - Upgrade baseimage: web-baseimage:0.1.11
   - phpMyAdmin 4.6.4

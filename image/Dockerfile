@@ -1,9 +1,9 @@
-FROM osixia/web-baseimage:0.1.11
+FROM osixia/web-baseimage:0.1.12
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.6.4
-ENV PHPMYADMIN_SHA1 e057c8f28a2cb96a1cd6ee02bdea6370b95ca422
+ENV PHPMYADMIN_VERSION 4.6.5
+ENV PHPMYADMIN_SHA1 08e3e30d3e906fd149e3c785d6c406e9adbd1915
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
@@ -26,6 +26,7 @@ RUN apt-get update \
 		&& /container/tool/add-multiple-process-stack \
 		&& /container/tool/add-service-available :apache2 :php5-fpm :ssl-tools \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+       ca-certificates \
        curl \
        mariadb-client \
        php5-gd \
@@ -33,11 +34,11 @@ RUN apt-get update \
        php5-mcrypt \
        php5-mysql \
        php-gettext \
-		&& curl -o phpmyadmin.tar.gz -SL http://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
+		&& curl -o phpmyadmin.tar.gz -SL https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
 		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
 		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
 		&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap \
-		&& apt-get remove -y --purge --auto-remove curl \
+		&& apt-get remove -y --purge --auto-remove ca-certificates curl \
     && rm phpmyadmin.tar.gz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
