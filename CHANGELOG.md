@@ -1,6 +1,7 @@
 # Changelog
 
 ## 4.6.5.2
+  - fix config issue with files in a volume
   - phpMyAdmin 4.6.5.2
 
 ## 4.6.5.1

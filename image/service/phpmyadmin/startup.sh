@@ -150,8 +150,8 @@ if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
     touch $FIRST_START_DONE
   fi
 
-  log-helper debug "link ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php to/var/www/phpmyadmin/config.inc.php"
-  ln -sf ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
+  log-helper debug "copy ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php to/var/www/phpmyadmin/config.inc.php"
+  cp -f ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
 
 fi
 
