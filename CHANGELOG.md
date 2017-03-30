@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.6.6-1
+  - Upgrade baseimage: web-baseimage:1.0.0
+
 ## 4.6.6
   - phpMyAdmin 4.6.6
 
