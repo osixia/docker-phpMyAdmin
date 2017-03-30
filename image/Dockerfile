@@ -2,8 +2,8 @@ FROM osixia/web-baseimage:1.0.0
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.6.6
-ENV PHPMYADMIN_SHA1 91a0256009e986603d0c813fef97d2f4be3ec41b
+ENV PHPMYADMIN_VERSION 4.7.0
+ENV PHPMYADMIN_SHA256 6a805ed3831b0fee961296186518171e9e5ba3816bf50d26a9aa641f2cb42335
 
 # MariaDB version
 ENV MARIADB_MAJOR 10.1
@@ -35,7 +35,7 @@ RUN apt-get update \
        php5-mysql \
        php-gettext \
 		&& curl -o phpmyadmin.tar.gz -SL https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
-		&& echo "$PHPMYADMIN_SHA1 *phpmyadmin.tar.gz" | sha1sum -c - \
+		&& echo "$PHPMYADMIN_SHA256 *phpmyadmin.tar.gz" | sha256sum -c - \
 		&& mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
 		&& tar -xzf phpmyadmin.tar.gz --strip 1 -C /var/www/phpmyadmin_bootstrap \
 		&& apt-get remove -y --purge --auto-remove ca-certificates curl \
