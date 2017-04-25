@@ -1,5 +1,5 @@
 NAME = osixia/phpmyadmin
-VERSION = 4.6.6
+VERSION = 4.7.0
 
 all: build
 
