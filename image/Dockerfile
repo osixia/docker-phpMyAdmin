@@ -1,20 +1,20 @@
-FROM osixia/web-baseimage:1.0.0
+FROM osixia/web-baseimage:1.1.0
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ENV PHPMYADMIN_VERSION 4.7.0
-ENV PHPMYADMIN_SHA256 6a805ed3831b0fee961296186518171e9e5ba3816bf50d26a9aa641f2cb42335
+ARG PHPMYADMIN_VERSION=4.7.2
+ARG PHPMYADMIN_SHA256=53bad6e63998732db704be45f1ea106cf26be23cf025922e5b2249e7709abc4f
 
 # MariaDB version
-ENV MARIADB_MAJOR 10.1
+ARG MARIADB_MAJOR=10.2
 
-# Install apache2 and php5-fpm using osixia/baseimage utils
+# Install apache2 and php7.0-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
-# php5-fpm install will detect apache2 and configure it
+# php7.0-fpm install will detect apache2 and configure it
 
 # Add MariaDB repository
-RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db \
-    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian jessie main" > /etc/apt/sources.list.d/mariadb.list \
+RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 \
+    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian stretch main" > /etc/apt/sources.list.d/mariadb.list \
     && { \
 		     echo 'Package: *'; \
 		     echo 'Pin: release o=MariaDB'; \
@@ -24,15 +24,15 @@ RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
 		&& /container/tool/add-multiple-process-stack \
-		&& /container/tool/add-service-available :apache2 :php5-fpm :ssl-tools \
+		&& /container/tool/add-service-available :apache2 :php7.0-fpm :ssl-tools \
 		&& LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
        ca-certificates \
        curl \
-       mariadb-client \
-       php5-gd \
-       php5-json \
-       php5-mcrypt \
-       php5-mysql \
+       mariadb-client-$MARIADB_MAJOR \
+       php7.0-gd \
+       php7.0-json \
+       php7.0-mcrypt \
+       php7.0-mysql \
        php-gettext \
 		&& curl -o phpmyadmin.tar.gz -SL https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
 		&& echo "$PHPMYADMIN_SHA256 *phpmyadmin.tar.gz" | sha256sum -c - \
