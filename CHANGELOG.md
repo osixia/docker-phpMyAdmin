@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.7.2
+  - phpMyAdmin 4.7.2
+  - Upgrade baseimage: web-baseimage:1.1.0 (debian stretch, php7)
+  - add config.inc.php in config folder
+
 ## 4.7.0
   - phpMyAdmin 4.7.0
 
