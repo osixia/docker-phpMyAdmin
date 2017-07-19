@@ -60,7 +60,7 @@ if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
   if [ ! -e "$FIRST_START_DONE" ]; then
 
     # phpMyAdmin Absolute URI
-    sed -i "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
+    sed -i "s|{{ PHPMYADMIN_CONFIG_ABSOLUTE_URI }}|${PHPMYADMIN_CONFIG_ABSOLUTE_URI}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php
 
     get_salt () {
       salt=$(</dev/urandom tr -dc '1324567890#<>,()*.^@$% =-_~;:/{}[]+!`azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN' | head -c64 | tr -d '\\')
@@ -68,11 +68,11 @@ if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
 
     # phpMyAdmin cookie secret
     get_salt
-    sed -i "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
+    sed -i "s|{{ PHPMYADMIN_BLOWFISH_SECRET }}|${salt}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php
 
     append_to_file() {
       TO_APPEND=$1
-      sed -i "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
+      sed -i "s|{{ PHPMYADMIN_SERVERS }}|${TO_APPEND}\n{{ PHPMYADMIN_SERVERS }}|g" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php
     }
 
     append_value_to_file() {
@@ -145,13 +145,13 @@ if [ ! -e "/var/www/phpmyadmin/config.inc.php" ]; then
       ((i++))
     done
 
-    sed -i "/{{ PHPMYADMIN_SERVERS }}/d" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php
+    sed -i "/{{ PHPMYADMIN_SERVERS }}/d" ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php
 
     touch $FIRST_START_DONE
   fi
 
-  log-helper debug "copy ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php to/var/www/phpmyadmin/config.inc.php"
-  cp -f ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config.inc.php /var/www/phpmyadmin/config.inc.php
+  log-helper debug "copy ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php to/var/www/phpmyadmin/config.inc.php"
+  cp -f ${CONTAINER_SERVICE_DIR}/phpmyadmin/assets/config/config.inc.php /var/www/phpmyadmin/config.inc.php
 
 fi
 

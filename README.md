@@ -64,9 +64,9 @@ Example script:
 ### Use your own phpMyAdmin config
 This image comes with a phpMyAdmin config.inc.php file that can be easily customized via environment variables for a quick bootstrap, but setting your own config.inc.php is possible. 2 options:
 
-- Link your config file at run time to `/container/service/phpmyadmin/assets/config.inc.php` :
+- Link your config file at run time to `/container/service/phpmyadmin/assets/config/config.inc.php` :
 
-      docker run --volume /data/my-config.inc.php:/container/service/phpmyadmin/assets/config.inc.php --detach osixia/phpmyadmin:4.7.2
+      docker run --volume /data/my-config.inc.php:/container/service/phpmyadmin/assets/config/config.inc.php --detach osixia/phpmyadmin:4.7.2
 
 - Add your config file by extending or cloning this image, please refer to the [Advanced User Guide](#advanced-user-guide)
 
@@ -249,7 +249,7 @@ Dockerfile example:
 
     ADD https-certs /container/service/phpmyadmin/assets/apache2/certs
     ADD database-certs /container/service/mariadb-client/assets/certs
-    ADD my-config.inc.php /container/service/phpmyadmin/assets/config.inc.php
+    ADD my-config.inc.php /container/service/phpmyadmin/assets/config/config.inc.php
     ADD environment /container/environment/01-custom
 
 
