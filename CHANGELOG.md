@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.7.4
+  - phpMyAdmin 4.7.4
+
 ## 4.7.3-1
   - Optimise apache config
   - Add opcache config
