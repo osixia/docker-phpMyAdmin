@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.7.6
+  - phpMyAdmin 4.7.6
+
 ## 4.7.5
   - phpMyAdmin 4.7.5
 
