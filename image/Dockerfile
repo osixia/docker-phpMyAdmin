@@ -1,9 +1,9 @@
-FROM osixia/web-baseimage:1.1.0
+FROM osixia/web-baseimage:1.1.1
 MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ARG PHPMYADMIN_VERSION=4.7.5
-ARG PHPMYADMIN_SHA256=c62b4072b9dc2a858f51ddd95e731c4717eb2fba85e1e108564736b8c8de1a2b
+ARG PHPMYADMIN_VERSION=4.7.6
+ARG PHPMYADMIN_SHA256=e460e41c2f74bf7093e3f6d3b762eb97df6e1b346234b4b63bb27fc0d9dcd62c
 
 # MariaDB version
 ARG MARIADB_MAJOR=10.2
