@@ -32,6 +32,7 @@ Latest release: 4.7.7 - phpMyAdmin 4.7.7 - [Changelog](CHANGELOG.md) | [Docker H
 	- [Tests](#tests)
 	- [Kubernetes](#kubernetes)
 	- [Under the hood: osixia/web-baseimage](#under-the-hood-osixiaweb-baseimage)
+- [Security](#security)
 - [Changelog](#changelog)
 
 ## Quick start
@@ -303,6 +304,11 @@ A kubernetes example is available in **example/kubernetes**
 
 This image is based on osixia/web-baseimage.
 More info: https://github.com/osixia/docker-web-baseimage
+
+## Security
+If you discover a security vulnerability within this docker image, please send an email to the Osixia! team at security@osixia.net. For minor vulnerabilities feel free to add an issue here on github.
+
+Please include as many details as possible.
 
 ## Changelog
 
