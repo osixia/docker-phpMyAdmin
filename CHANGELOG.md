@@ -132,6 +132,7 @@ and this project follows phpMyAdmin versioning.
 ## [0.2.0] - 2015-02-23
 No changelog before this release sorry :)
 
+[4.8.0]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.7.9...v4.8.0
 [4.7.9]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.7.8...v4.7.9
 [4.7.8]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.7.7...v4.7.8
 [4.7.7]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.7.6...v4.7.7
