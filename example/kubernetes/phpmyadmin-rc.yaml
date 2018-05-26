@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: phpmyadmin
-          image: osixia/phpmyadmin:4.8.0
+          image: osixia/phpmyadmin:4.8.1
           volumeMounts:
             - name: phpmyadmin-certs
               mountPath: /container/service/phpmyadmin/assets/apache2/certs
