@@ -1,12 +1,11 @@
 FROM osixia/web-baseimage:1.1.1
-MAINTAINER Bertrand Gouny <bertrand.gouny@osixia.net>
 
 # phpMyAdmin version
-ARG PHPMYADMIN_VERSION=4.8.1
-ARG PHPMYADMIN_SHA256=4f7771e96a1637797e0dc710d36345d8327a612d8c08ac305018ef7185f2217d
+ARG PHPMYADMIN_VERSION=4.8.2
+ARG PHPMYADMIN_SHA256=12a2462116fa8e32866c04f48678ef077520a108f3350bcee701d0e39b865a89
 
 # MariaDB version
-ARG MARIADB_MAJOR=10.2
+ARG MARIADB_MAJOR=10.3
 
 # Install apache2 and php7.0-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
