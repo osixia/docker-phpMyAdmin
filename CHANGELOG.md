@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows phpMyAdmin versioning.
 
+## [4.8.3] - 2018-09-04
+### Changed
+  - Upgrade phpMyAdmin version to 4.8.3
+
 ## [4.8.2] - 2018-07-28
 ### Changed
   - Upgrade phpMyAdmin version to 4.8.2

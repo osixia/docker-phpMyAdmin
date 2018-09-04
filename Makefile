@@ -1,5 +1,5 @@
 NAME = osixia/phpmyadmin
-VERSION = 4.8.2
+VERSION = 4.8.3
 
 .PHONY: build build-nocache test tag-latest push push-latest release git-tag-version
 
