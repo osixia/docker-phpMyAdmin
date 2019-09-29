@@ -14,7 +14,7 @@ load test_helper
   rm -f $tmp_file
 
   run_image
-  wait_process apache2 php-fpm7.0
+  wait_process apache2 php-fpm7.3
   curl --silent --insecure https://$CONTAINER_IP >> $tmp_file
   run grep -c "loginform" $tmp_file
   rm $tmp_file
@@ -42,7 +42,7 @@ load test_helper
   wait_process_by_cid $DB_CID mysqld
 
   # wait wordpress container apache2 service
-  wait_process apache2 php-fpm7.0
+  wait_process apache2 php-fpm7.3
 
   curl -L --silent --insecure -c $BATS_TMPDIR/cookie.txt https://$CONTAINER_IP >> $tmp_file
 
