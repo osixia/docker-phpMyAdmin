@@ -16,10 +16,10 @@ RUN apt-get update \
     ca-certificates \
     curl \
     mariadb-client \
-    php-apcu \
     php-gettext \
     php-mbstring \
     php-xml \
+    php7.3-apc \
     php7.3-gd \
     php7.3-json \
     php7.3-mysql \
