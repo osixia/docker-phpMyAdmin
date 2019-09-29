@@ -4,21 +4,9 @@ FROM osixia/web-baseimage:release-1.2.0-dev
 ARG PHPMYADMIN_VERSION=4.9.1
 ARG PHPMYADMIN_SHA256=f0ce59ae37400eaebb35aef96ab8f0e45bb0f111a2cd1a5146062fa118201559
 
-# MariaDB version
-ARG MARIADB_MAJOR=10.4
-
 # Install apache2 and php7.3-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
 # php7.3-fpm install will detect apache2 and configure it
-
-# Add MariaDB repository
-RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xF1656F24C74CD1D8 \
-    && echo "deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/$MARIADB_MAJOR/debian buster main" > /etc/apt/sources.list.d/mariadb.list \
-    && { \
-    echo 'Package: *'; \
-    echo 'Pin: release o=MariaDB'; \
-    echo 'Pin-Priority: 999'; \
-    } > /etc/apt/preferences.d/mariadb
 
 # Download, check integrity and unzip phpMyAdmin to /var/www/phpmyadmin_bootstrap
 RUN apt-get update \
@@ -27,7 +15,7 @@ RUN apt-get update \
     && LC_ALL=C DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
-    mariadb-client-$MARIADB_MAJOR \
+    mariadb-client \
     php-apcu \
     php-gettext \
     php-mbstring \
