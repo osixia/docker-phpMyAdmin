@@ -15,6 +15,9 @@ load test_helper
 
   run_image
   wait_process apache2 php-fpm7.3
+  
+  sleep 5
+
   curl --silent --insecure https://$CONTAINER_IP >> $tmp_file
   run grep -c "loginform" $tmp_file
   rm $tmp_file
