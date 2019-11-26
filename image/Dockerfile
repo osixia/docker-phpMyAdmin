@@ -1,8 +1,8 @@
 FROM osixia/web-baseimage:release-1.2.0-dev
 
 # phpMyAdmin version
-ARG PHPMYADMIN_VERSION=4.9.1
-ARG PHPMYADMIN_SHA256=f0ce59ae37400eaebb35aef96ab8f0e45bb0f111a2cd1a5146062fa118201559
+ARG PHPMYADMIN_VERSION=4.9.2
+ARG PHPMYADMIN_SHA256=82d1f846cb4bd29a9f2827527958db11df948c5e32b56c7b06f4f8b7dad81450
 
 # Install apache2 and php7.3-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
