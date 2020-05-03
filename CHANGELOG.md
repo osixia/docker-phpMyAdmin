@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project follows phpMyAdmin versioning.
 
+## [5.0.2] - 2020-05-03
+### Changed
+  - Upgrade phpMyAdmin version to 5.0.2
+
 ## [4.9.2] - 2019-11-26
 ### Changed
   - Upgrade phpMyAdmin version to 4.9.2
@@ -168,6 +172,7 @@ and this project follows phpMyAdmin versioning.
 ## [0.2.0] - 2015-02-23
 No changelog before this release sorry :)
 
+[5.0.2]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.9.2..v5.0.2
 [4.9.2]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.9.1..v4.9.2
 [4.9.1]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.8.5...v4.9.1
 [4.8.5]: https://github.com/osixia/docker-phpMyAdmin/compare/v4.8.4...v4.8.5

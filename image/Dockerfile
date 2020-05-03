@@ -1,8 +1,8 @@
 FROM osixia/web-baseimage:release-1.2.0-dev
 
 # phpMyAdmin version
-ARG PHPMYADMIN_VERSION=4.9.2
-ARG PHPMYADMIN_SHA256=82d1f846cb4bd29a9f2827527958db11df948c5e32b56c7b06f4f8b7dad81450
+ARG PHPMYADMIN_VERSION=5.0.2
+ARG PHPMYADMIN_SHA256=8d5cb67de154262b6e51e6ac6967d0931d28ef39cdc7fbec44011d374eb432ae
 
 # Install apache2 and php7.3-fpm using osixia/baseimage utils
 # Caution: /container/tool/install-service-available arguments order is important
@@ -16,13 +16,13 @@ RUN apt-get update \
     ca-certificates \
     curl \
     mariadb-client \
+    php-apcu \
+    php-gd \
     php-gettext \
+    php-json \
     php-mbstring \
+    php-mysql \
     php-xml \
-    php7.3-apc \
-    php7.3-gd \
-    php7.3-json \
-    php7.3-mysql \
     && curl -o phpmyadmin.tar.gz -SL https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz \
     && echo "$PHPMYADMIN_SHA256 *phpmyadmin.tar.gz" | sha256sum -c - \
     && mkdir -p /var/www/phpmyadmin_bootstrap /var/www/phpmyadmin \
