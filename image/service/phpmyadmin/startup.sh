@@ -45,7 +45,7 @@ a2ensite phpmyadmin | log-helper debug
 #
 if [ ! "$(ls -A -I lost+found /var/www/phpmyadmin)" ]; then
 
-  log-helper info "Bootstap phpMyAdmin..."
+  log-helper info "Bootstrap phpMyAdmin..."
 
   cp -R /var/www/phpmyadmin_bootstrap/* /var/www/phpmyadmin
   rm -rf /var/www/phpmyadmin_bootstrap
